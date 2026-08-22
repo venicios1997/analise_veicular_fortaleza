@@ -1,84 +1,90 @@
 # Critérios de sucesso
 
-O sucesso do projeto é dado à completude dos objetivos de negócio definidos a seguir. Cada
-objetivo está descrito no formato de história de usuário (**Como** / **Quero** / **Para** /
-**Objetivo**), acompanhado dos respectivos critérios de aceite.
-
-!!! tip "Como preencher esta página"
-    A estrutura abaixo é um ponto de partida: replique o bloco de objetivo quantas vezes
-    forem necessárias e substitua os textos em destaque pelos do seu projeto.
-
-    Regras práticas:
-
-    - um objetivo por necessidade de negócio, com **um solicitante identificável**;
-    - de 2 a 4 critérios de aceite por objetivo, cada um **verificável** (dá para dizer
-      "sim" ou "não" ao final);
-    - a **entrega** aponta o artefato concreto (notebook, tabela, figura, relatório);
-    - critérios que dependem de dado indisponível ficam desmarcados e vão para a seção de
-      pendências, em vez de serem reescritos para caber no que existe.
+O sucesso do projeto é dado pela completude dos três objetivos de negócio a seguir,
+derivados do Canvas do Problema da disciplina. Cada um está descrito no formato
+**Como** / **Quero** / **Para** / **Objetivo**, com critérios de aceite verificáveis.
 
 ## Visão geral
 
 | # | Objetivo de negócio | Solicitante (papel) | Entrega principal |
 |:-:|:---|:---|:---|
-| 1 | &lt;Objetivo 1&gt; | &lt;Papel do solicitante&gt; | &lt;Entrega principal&gt; |
-| 2 | &lt;Objetivo 2&gt; | &lt;Papel do solicitante&gt; | &lt;Entrega principal&gt; |
-| 3 | &lt;Objetivo 3&gt; | &lt;Papel do solicitante&gt; | &lt;Entrega principal&gt; |
+| 1 | Segmentar a carteira de anúncios em grupos tecnicamente defensáveis | Pequena revenda (cenário do Canvas) | `03-modelagem.ipynb`, `models/modelo-segmentacao.joblib` |
+| 2 | Descrever cada segmento em linguagem de negócio | Pequena revenda (cenário do Canvas) | Perfil dos segmentos, `models/catalogo_de_segmentos.json` |
+| 3 | Entregar em forma utilizável pela operação | Pequena revenda (cenário do Canvas) | Aplicação Streamlit (`src/deployment/app.py`) |
 
 ---
 
-## 1. &lt;Objetivo 1&gt;
+## 1. Segmentar a carteira de anúncios em grupos tecnicamente defensáveis
 
-???+ success "&lt;Objetivo 1&gt;"
-    **Como** &lt;papel do solicitante&gt;<br>
-    **Quero** &lt;o que a pessoa quer obter&gt;<br>
-    **Para** &lt;qual decisão ou entrega isso viabiliza&gt;<br>
-    **Objetivo** &lt;o resultado de negócio esperado&gt;
-
-    **Critérios de aceite:**
-
-    - [ ] <span style="color:red">**Adicione um critério verificável**</span>
-    - [ ] <span style="color:red">**Adicione um critério verificável**</span>
-    - [ ] <span style="color:red">**Adicione um critério verificável**</span>
-
-    **Entrega:** <span style="color:red">**Aponte o artefato — notebook, tabela, figura ou
-    relatório — e onde ele fica no repositório**</span>
-
-## 2. &lt;Objetivo 2&gt;
-
-???+ success "&lt;Objetivo 2&gt;"
-    **Como** &lt;papel do solicitante&gt;<br>
-    **Quero** &lt;o que a pessoa quer obter&gt;<br>
-    **Para** &lt;qual decisão ou entrega isso viabiliza&gt;<br>
-    **Objetivo** &lt;o resultado de negócio esperado&gt;
+???+ success "Segmentação técnica"
+    **Como** pequena revenda de veículos de Fortaleza<br>
+    **Quero** que os anúncios do mercado sejam agrupados por características
+    semelhantes, sem que eu defina os grupos manualmente<br>
+    **Para** ter uma leitura estruturada do mercado, e não só a minha experiência
+    pessoal<br>
+    **Objetivo** um número de segmentos operável, com separação estatística real
+    entre eles
 
     **Critérios de aceite:**
 
-    - [ ] <span style="color:red">**Adicione um critério verificável**</span>
-    - [ ] <span style="color:red">**Adicione um critério verificável**</span>
+    - [x] Entre 4 e 8 segmentos — obtido: **5**
+    - [x] Silhueta ≥ 0,40 — obtido: **0,542**
+    - [x] Nenhum segmento com menos de 50 anúncios (volume mínimo para leitura
+      confiável) — obtido: **60** (menor segmento)
+    - [x] A escolha do espaço de atributos é testada, não presumida — a seção
+      *Sensibilidade ao espaço de atributos* do notebook `03-modelagem` compara
+      o espaço numérico com o espaço misto (one-hot) antes de decidir
 
-    **Entrega:** <span style="color:red">**Aponte o artefato e onde ele fica no
-    repositório**</span>
+    **Entrega:** `notebooks/03-modelagem.ipynb`, seções "Seleção de algoritmo e
+    hiperparâmetros" e "Ajuste final e avaliação técnica";
+    `models/modelo-segmentacao.joblib`.
 
-    !!! warning "Ressalva (opcional)"
-        Use um bloco como este quando um critério não puder ser cumprido integralmente —
-        explique **o que falta**, **por quê** e **o que foi entregue no lugar**.
+## 2. Descrever cada segmento em linguagem de negócio
 
-## 3. &lt;Objetivo 3&gt;
-
-???+ success "&lt;Objetivo 3&gt;"
-    **Como** &lt;papel do solicitante&gt;<br>
-    **Quero** &lt;o que a pessoa quer obter&gt;<br>
-    **Para** &lt;qual decisão ou entrega isso viabiliza&gt;<br>
-    **Objetivo** &lt;o resultado de negócio esperado&gt;
+???+ success "Leitura comercial dos segmentos"
+    **Como** pequena revenda de veículos de Fortaleza<br>
+    **Quero** saber o que cada segmento representa — preço típico, quilometragem,
+    idade, marca e carroceria mais comuns<br>
+    **Para** decidir, para cada grupo, se ele faz sentido para o meu estoque<br>
+    **Objetivo** um perfil de negócio para cada um dos 5 segmentos, incluindo uma
+    leitura de oportunidade comercial
 
     **Critérios de aceite:**
 
-    - [ ] <span style="color:red">**Adicione um critério verificável**</span>
-    - [ ] <span style="color:red">**Adicione um critério verificável**</span>
+    - [x] Perfil (preço, km, idade, marca e carroceria dominantes) para os 5
+      segmentos — tabela `reports/tables/modelagem/perfil-dos-segmentos.csv`
+    - [x] Pelo menos 2 oportunidades comerciais identificadas — o segmento 3
+      (populares usados, 41,5% da base) tem desconto médio de **+3,0%** sobre a
+      FIPE; o segmento 2 (seminovos recentes, 41,1%) tem ágio de apenas 0,6% —
+      ambos batem a meta preliminar do Canvas
+    - [x] Validação externa dos segmentos contra uma variável que **não** entrou
+      na modelagem (`bairro`) — seção "Validação externa" do notebook
+      `03-modelagem`
 
-    **Entrega:** <span style="color:red">**Aponte o artefato e onde ele fica no
-    repositório**</span>
+    **Entrega:** `models/catalogo_de_segmentos.json`;
+    `reports/tables/modelagem/oportunidades-comerciais.csv`;
+    `reports/figures/modelagem/segmentos-preco-x-km.png`.
+
+## 3. Entregar em forma utilizável pela operação
+
+???+ success "Aplicação de classificação"
+    **Como** pequena revenda de veículos de Fortaleza<br>
+    **Quero** classificar um anúncio novo (ou em análise de compra) no segmento
+    correspondente sem precisar rodar notebook nenhum<br>
+    **Para** usar a segmentação no dia a dia da operação, não só como relatório
+    acadêmico<br>
+    **Objetivo** uma aplicação local, simples, que reutiliza o modelo treinado
+
+    **Critérios de aceite:**
+
+    - [x] Aplicação Streamlit que carrega o modelo salvo e classifica um anúncio
+      a partir de ano e quilometragem
+    - [x] A aplicação mostra o catálogo dos 5 segmentos e a leitura de
+      oportunidade comercial
+    - [x] A aplicação roda localmente sem retreinar nada (`uv run invoke app`)
+
+    **Entrega:** `src/deployment/app.py`; `models/modelo-segmentacao.joblib`;
+    `models/catalogo_de_segmentos.json`.
 
 ---
 
@@ -86,20 +92,24 @@ objetivo está descrito no formato de história de usuário (**Como** / **Quero*
 
 | Objetivo | Critérios de aceite | Concluídos | Observação |
 |:---|:-:|:-:|:---|
-| 1. &lt;Objetivo 1&gt; | 0 | 0 | — |
-| 2. &lt;Objetivo 2&gt; | 0 | 0 | — |
-| 3. &lt;Objetivo 3&gt; | 0 | 0 | — |
-| **Total** | **0** | **0** | |
+| 1. Segmentação técnica | 4 | 4 | — |
+| 2. Leitura comercial | 3 | 3 | — |
+| 3. Aplicação | 3 | 3 | — |
+| **Total** | **10** | **10** | |
 
 ## Pendências de dados
 
-Critérios em aberto que **não dependem de análise**, e sim de dado que não veio na origem.
-Registre aqui para que a conversa com a área provedora tenha uma lista objetiva.
+Nenhuma pendência bloqueia os critérios acima. Duas limitações registradas em
+[Entendimento dos dados](entendimento-dados.md#limitacoes) não impedem o
+objetivo do projeto, mas restringem a interpretação dos resultados:
 
 | # | Pendência | Destrava |
 |:-:|:---|:---|
-| 1 | <span style="color:red">**Qual dado falta**</span> | <span style="color:red">**Que critério(s) isso libera**</span> |
+| 1 | Preço de venda efetivo (só temos o preço anunciado) | Acesso a dados de transação real, que a OLX não publica |
+| 2 | Série histórica de anúncios (coleta é de um único dia) | Coletas repetidas ao longo do tempo, fora do escopo deste projeto |
 
 !!! info "Fonte"
-    <span style="color:red">**Cite o documento de origem destes critérios (ata, termo de
-    abertura, documento de requisitos) e a sua versão.**</span>
+    Critérios derivados do documento `projeto_ml_nao_supervisionado_mercado_carros_fortaleza.md`
+    (Canvas do Problema da disciplina de Aprendizado de Máquina Não Supervisionado,
+    MBA em Ciência de Dados), seções 4 ("Critério de sucesso do negócio") e 6
+    ("Critério de sucesso técnico").

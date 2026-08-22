@@ -1,0 +1,6 @@
+﻿;segmento;anuncios;preco_mediano;km_mediano;idade_mediana;desconto_fipe_medio_pct;marca_mais_comum;carroceria_mais_comum;cambio_mais_comum;municipio_mais_comum;participacao_pct
+0;1;84;149990,0;0,0;0,0;-5,983633840858628;BYD;Hatch;Automático;Fortaleza;3,4
+1;2;1020;99495,0;43953,0;2,0;-0,612617688973475;Fiat;Hatch;Automático;Fortaleza;41,1
+2;3;1029;41900,0;117000,0;12,0;2,9879123062797435;Chevrolet;Hatch;Manual;Fortaleza;41,5
+3;4;60;24950,0;200,0;16,5;-25,363835969145697;Fiat;Hatch;Manual;Fortaleza;2,4
+4;0;286;14994,5;163000,0;24,0;-8,248836461132191;Volkswagen;Hatch;Manual;Fortaleza;11,5

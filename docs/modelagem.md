@@ -4,102 +4,134 @@ Esta página descreve **o desenho do experimento de modelagem**: qual problema o
 resolve, sobre que unidade de análise ele opera, quais variáveis entram, qual técnica foi
 escolhida e como o resultado é avaliado.
 
-!!! tip "Como preencher esta página"
-    Nem todo objetivo exige modelo — objetivos descritivos são resolvidos na
-    [análise exploratória](analise-exploratoria.md). Declare logo no início **quais**
-    objetivos exigem modelagem e por quê.
-
-    Regras práticas:
-
-    - a **unidade de análise** vem da pergunta de negócio, não do formato da tabela; se a
-      pergunta é sobre o cliente, um registro por transação faria os clientes recorrentes
-      dominarem o resultado;
-    - amarre cada variável ao **critério de aceite** que a pediu, e marque as que você
-      acrescentou por conta própria;
-    - justifique a **técnica** pelo tipo de dado (categórico, contínuo, misto, textual,
-      temporal) — não pela familiaridade com a biblioteca;
-    - toda métrica de avaliação vem com a **direção de leitura** (maior é melhor / menor é
-      melhor) e com a ressalva de quando ela engana;
-    - liste as **saídas** com caminho: modelo serializado, tabelas de resultado e figuras.
+O único objetivo que exige modelagem é o Objetivo 1 dos
+[critérios de sucesso](criterios-sucesso.md) — segmentar a carteira de anúncios.
+Os objetivos 2 e 3 (leitura comercial, aplicação) consomem o resultado, mas não
+treinam nada de novo.
 
 ## Problema
 
-<span style="color:red">**Enuncie o problema em uma frase, no vocabulário do negócio, e
-indique a que objetivo dos [critérios de sucesso](criterios-sucesso.md) ele corresponde.**</span>
+Identificar agrupamentos naturais de veículos existentes no mercado de
+Fortaleza a partir de suas características comerciais e técnicas — sem definir
+os grupos previamente (aprendizado não supervisionado).
 
-<span style="color:red">**Aponte o notebook e o módulo onde a modelagem está
-implementada.**</span>
+Implementado em `notebooks/03-modelagem.ipynb` e `src/data/preparacao.py`
+(pré-processador) + `src/model/avaliacao.py` (métrica de seleção).
 
 ## Unidade de análise
 
-Um registro por **&lt;unidade de análise&gt;** (`arquivo_de_entrada`).
+Um registro por **anúncio de veículo usado** (`data/processed/anuncios_curados.parquet`).
 
-<span style="color:red">**Justifique a escolha: por que esta unidade e não outra, e o que
-daria errado com a alternativa.**</span>
+É a mesma unidade de análise de toda a base — o Canvas do Problema já define
+assim (cada linha é uma oferta de mercado), e agrupar por outra unidade (por
+exemplo, por modelo de carro) descartaria a variação de preço e estado entre
+anúncios do mesmo modelo, que é justamente parte do que o mercado revela.
 
 ## Variáveis
 
 | Critério pede | Variável usada | Observação |
 |:---|:---|:---|
-| &lt;dimensão pedida no critério&gt; | `nome_da_coluna` | &lt;o que ela representa&gt; |
-| &lt;dimensão pedida no critério&gt; | `nome_da_coluna` | &lt;o que ela representa&gt; |
-| — | `nome_da_coluna` | &lt;variável acrescentada e o que ela captura&gt; |
-
-<span style="color:red">**Descreva as variáveis derivadas, se houver, e o que elas separam
-que as variáveis originais não separavam.**</span>
+| Preço | `preco` | **reservada** — rótulo, avaliação *a posteriori* |
+| Ano | `ano` | espaço de atributos |
+| Quilometragem | `km` | espaço de atributos |
+| Marca, modelo | `marca` | espaço de atributos (nominal, agrupada — ver abaixo); `modelo` fica fora (224 categorias, granularidade excessiva) |
+| Motorização | — | `motor` (texto livre do anúncio) não está no espaço de atributos; `cambio`/`combustivel` entram no lugar, estruturados |
+| Carroceria | `carroceria` | espaço de atributos |
+| Câmbio | `cambio` | espaço de atributos |
+| Combustível | `combustivel` | espaço de atributos |
+| Localização | `bairro` | **reservada** — proxy de geografia, usada só para validação externa dos segmentos |
+| Tipo de vendedor | `vendedor_tipo` | espaço de atributos |
+| — | `zero_km` | variável acrescentada: flag binária (`km == 0`) — "carro de vitrine" é uma categoria de negócio distinta, não só a ponta inferior da distribuição de `km` |
+| — | `valor_fipe_final` | **reservada** — derivada de marca/modelo/ano, usada só para medir desconto/oportunidade comercial |
 
 ### Pré-processamento
 
-<span style="color:red">**Registre cada transformação e o motivo.**</span>
-
-??? note "Transformações que costumam entrar aqui"
-    - agrupamento de categorias raras em `Outros`, para que o modelo não gaste capacidade
-      descrevendo ruído;
-    - decisão sobre ausência: virar categoria própria, ser imputada ou excluir a linha;
-    - transformação de escala em contagens com cauda longa (`log1p`, padronização);
-    - codificação de categóricas, coerente com a técnica escolhida;
-    - balanceamento, quando a classe de interesse é rara.
+- **Agrupamento de categorias raras em `Outras`**: `marca` (41 categorias) e
+  `municipio` (27) têm cauda longa. Categoria com menos de 20 anúncios
+  (≈0,8% da base) vira `Outras`, reduzindo `marca` a 16 categorias efetivas.
+- **Ausência**: já resolvida na preparação (ver [Preparação dos dados](preparacao.md))
+  — nenhuma célula vazia no espaço de atributos ao chegar na modelagem.
+- **Transformação de escala**: `log1p` seletivo em `km` (assimetria 0,94, acima
+  do limiar de 0,75), seguido de `MinMaxScaler` nas numéricas/binárias
+  (`ano`, `km`, `zero_km`).
+- **Codificação de categóricas**: `OneHotEncoder` — mas **não entram na
+  modelagem final** (ver seção Técnica, abaixo). Ficam disponíveis para a
+  leitura de negócio dos segmentos.
 
 ## Técnica
 
-<span style="color:red">**Explique por que esta técnica se aplica ao tipo de dado do
-problema.**</span>
+K-Means (e três concorrentes: MiniBatch K-Means, Bisecting K-Means, Birch),
+escolhidos por serem algoritmos particionais/hierárquicos padrão para dados
+predominantemente numéricos — o tipo de dado que a segunda etapa do desenho
+(abaixo) mostrou ser a melhor leitura deste problema.
 
 ```mermaid
 flowchart LR
-    A["entrada<br/>variáveis"] --> B["etapa 1<br/>transformação"]
-    B --> C["etapa 2<br/>modelo"]
-    C --> D["etapa 3<br/>caracterização do resultado"]
+    A["espaço de atributos<br/>12 variáveis"] --> B["sensibilidade<br/>numérico x misto (one-hot)"]
+    B --> C["pré-processador<br/>log1p + MinMax"]
+    C --> D["GridSearchCV<br/>4 algoritmos x grade de k"]
+    D --> E["perfilagem<br/>leitura de negócio por segmento"]
 ```
 
-<span style="color:red">**Detalhe cada etapa do pipeline e onde ela é ajustada — em amostra
-ou na base completa.**</span>
+### Sensibilidade ao espaço de atributos
+
+Antes de fixar o desenho, duas leituras do espaço de atributos foram testadas
+empiricamente (não presumidas):
+
+| Espaço | Dimensões | Silhueta (k=4-8) |
+|:---|---:|:---|
+| Numérico enxuto (`ano`, `km`, `zero_km`) | 3 | 0,47 a 0,54 |
+| Misto (+ one-hot das 9 nominais) | 106 | 0,10 a 0,14 |
+
+O espaço misto dilui a silhueta: 103 das 106 dimensões são *dummies* quase
+sempre zero, e a distância euclidiana passa a ser dominada por combinações
+categóricas, não pelo perfil de uso do veículo. **Decisão: a modelagem usa o
+espaço numérico enxuto** — as nominais continuam decisivas, mas na leitura
+comercial dos segmentos, não como entrada do algoritmo.
+
+### Seleção de algoritmo e hiperparâmetros
+
+`GridSearchCV` (métrica: silhueta, a única que não depende de rótulo)
+selecionando hiperparâmetros dentro de cada modelo, validado por
+`ShuffleSplit` (5 reamostragens de 80/20) via `cross_validate` — um modelo que
+só funciona numa fatia específica dos dados não serve para operação. `k`
+(número de segmentos) varre exatamente o intervalo do Canvas do Problema (4 a
+8). O ajuste final é refeito em toda a base (a validação cruzada serve para
+escolher, não para o modelo entregue).
 
 ## Avaliação do modelo
 
 | Métrica | Leitura |
 |:---|:---|
-| &lt;métrica&gt; | &lt;maior ou menor é melhor, e o que ela mede&gt; |
-| &lt;métrica&gt; | &lt;maior ou menor é melhor, e o que ela mede&gt; |
-
-<span style="color:red">**Descreva o desenho do experimento: divisão treino/teste, validação
-cruzada, faixa de hiperparâmetros testada e critério de escolha do modelo final.**</span>
+| Silhueta | maior é melhor — separação entre clusters; critério de aceite ≥ 0,40 |
+| Davies-Bouldin | menor é melhor — razão intra/entre-cluster |
+| Calinski-Harabasz | maior é melhor — dispersão entre/dentro dos grupos |
 
 !!! warning "Ressalva de métrica"
-    Use um bloco como este para registrar quando uma métrica engana no seu contexto — por
-    exemplo, acurácia com classes desbalanceadas, ou índices de separação em espaços
-    derivados de variáveis categóricas. Diga qual é o critério de desempate.
+    A silhueta sobre o espaço misto (one-hot) chegava a apenas ~0,10 — não
+    porque os grupos não existam, mas porque a distância euclidiana em espaço
+    de alta dimensão esparsa engana. É por isso que a comparação de espaços
+    (acima) faz parte do desenho do experimento, e não é um detalhe de
+    implementação: métrica boa em espaço errado não vira modelo bom.
+
+**Resultado:** K-Means venceu (`n_clusters=5`, `init=k-means++`) contra os
+outros três candidatos. Silhueta **0,542**, Davies-Bouldin **0,543**,
+Calinski-Harabasz **6.670**.
 
 ## Interpretação do resultado
 
-<span style="color:red">**Explique como o resultado é traduzido para o negócio: importância
-de variáveis, caracterização de grupos, regras extraídas. Se houver nomeação automática de
-grupos ou classes, descreva o critério.**</span>
+Cada segmento é perfilado por mediana/moda das variáveis que **não** entraram
+na clusterização (marca, carroceria, câmbio, tipo de vendedor) mais preço,
+km e idade — é assim que o número do cluster vira persona de negócio. A
+nomeação dos grupos ("populares antigos", "seminovos recentes"...) é manual,
+feita a partir dessas medianas, não automática. Detalhe completo em
+[Avaliação dos resultados](avaliacao.md).
 
 ## Saídas
 
 | Arquivo | Conteúdo |
 |:---|:---|
-| `data/processed/nome.parquet` | &lt;o que contém&gt; |
-| `models/nome.joblib` | &lt;modelo serializado, para que serve&gt; |
-| `reports/figures/nome/*.png` | &lt;quais figuras&gt; |
+| `data/processed/anuncios_segmentados.parquet` | a base curada + coluna `segmento` |
+| `models/modelo-segmentacao.joblib` | pipeline treinado (pré-processador + `GridSearchCV`), pronto para `.predict()` |
+| `models/catalogo_de_segmentos.json` | métricas do modelo + perfil de cada segmento |
+| `reports/figures/modelagem/*.png` | sensibilidade ao espaço de atributos, mapa preço × km |

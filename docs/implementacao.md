@@ -3,86 +3,77 @@
 Um resultado só é útil quando quem decide consegue acessá-lo. Esta página descreve **como a
 entrega chega ao usuário**, como ela é mantida em funcionamento e como o projeto é encerrado.
 
-!!! tip "Como preencher esta página"
-    A complexidade desta fase varia muito: pode ser um relatório recorrente, um painel, um
-    arquivo publicado em rede ou um serviço em produção. Descreva o que se aplica ao seu
-    caso e remova o resto.
-
-    Regras práticas:
-
-    - defina o **consumidor** da entrega antes do meio: quem abre, com que frequência e para
-      decidir o quê;
-    - descreva como a entrega é **atualizada** — entrega que só existe porque alguém rodou o
-      notebook uma vez não está implantada;
-    - modelo em produção **degrada**: sem plano de monitoramento, a fase de implantação está
-      incompleta;
-    - registre o que acontece **quando falha** — quem é avisado e qual é o comportamento
-      esperado enquanto não há dado novo;
-    - encerre com o relatório final e a retrospectiva, senão o aprendizado fica só no
-      repositório.
-
 ## Plano de implantação
 
-<span style="color:red">**Descreva a forma da entrega e por que ela foi escolhida.**</span>
+A entrega é uma aplicação Streamlit local (`src/deployment/app.py`) — escolhida
+por não exigir infraestrutura de servidor nem custo de hospedagem, adequada ao
+porte de uma pequena revenda que quer consultar o resultado sem depender de
+serviço externo.
 
 | Entrega | Consumidor | Meio | Frequência |
 |:---|:---|:---|:---|
-| &lt;o que é entregue&gt; | &lt;quem consome&gt; | &lt;relatório, painel, arquivo, API&gt; | &lt;sob demanda, mensal, diária&gt; |
+| Classificação de anúncio + catálogo de segmentos | Pequena revenda (cenário do Canvas) | Aplicação Streamlit local | Sob demanda |
+| Documentação do processo (esta publicação) | Quem avalia/revisa o projeto | Site MkDocs | Estática, atualizada a cada revisão |
 
 ```mermaid
 flowchart LR
-    A["dado atualizado"] --> B["processamento<br/>pipeline do projeto"]
-    B --> C["artefato<br/>relatório, painel ou modelo"]
-    C --> D["consumidor<br/>quem decide"]
+    A["notebooks 00-03<br/>executados manualmente"] --> B["models/<br/>modelo + catálogo"]
+    B --> C["src/deployment/app.py<br/>Streamlit"]
+    C --> D["pequena revenda<br/>decide o que comprar"]
 ```
 
-<span style="color:red">**Indique o que dispara a atualização (execução manual, agendamento,
-chegada de dado novo) e onde o artefato é publicado.**</span>
+A atualização é **manual**: rodar `uv run invoke notebooks` (ou os notebooks
+individualmente) regrava `models/modelo-segmentacao.joblib` e
+`models/catalogo_de_segmentos.json`; a aplicação lê esses arquivos a cada
+inicialização (com `st.cache_resource`/`st.cache_data`, então precisa ser
+reiniciada para pegar um modelo novo).
 
 ## Monitoramento e manutenção
 
-<span style="color:red">**Defina o que é acompanhado depois da entrega e com que
-periodicidade.**</span>
+Não há pipeline de dados novo chegando automaticamente — a coleta é manual e
+pontual (ver [Fonte dos dados](fonte-dados.md)). O que se aplica, num projeto
+deste porte:
 
 | O que monitorar | Como | Periodicidade | Ação se desviar |
 |:---|:---|:---|:---|
-| &lt;indicador&gt; | &lt;forma de medição&gt; | &lt;periodicidade&gt; | &lt;o que fazer&gt; |
+| A aplicação carrega o modelo sem erro | `uv run invoke test` (smoke test) antes de cada uso | a cada atualização de código | corrigir antes de publicar |
+| Os notebooks executam do início ao fim sem quebrar | `uv run invoke notebooks` | antes de qualquer entrega | corrigir a célula que falhou |
+| A silhueta do modelo se mantém ≥ 0,40 numa coleta nova | recomparar contra `models/catalogo_de_segmentos.json` | se e quando houver nova coleta | reavaliar o número de segmentos e o espaço de atributos (repetir a seção de sensibilidade) |
 
-??? note "O que costuma ser monitorado"
-    - **execução**: a carga rodou, no horário previsto, sem erro;
-    - **volumetria**: o volume recebido está dentro do esperado — queda brusca costuma ser
-      falha de origem, não mudança de comportamento;
-    - **qualidade**: percentual de nulos e cardinalidade das dimensões-chave estáveis;
-    - **desempenho do modelo**, quando houver: as métricas se mantêm em produção;
-    - **desvio de distribuição**: os dados de entrada continuam parecidos com os de treino.
-
-<span style="color:red">**Registre quem é acionado quando algo falha e qual é o
-comportamento esperado enquanto o problema não é resolvido.**</span>
+Não há alerta automatizado nem plantão — o autor é o único responsável, e o uso
+é sob demanda, não em produção contínua.
 
 ### Retreinamento
 
-<span style="color:red">**Se houver modelo, diga quando ele é retreinado — por calendário,
-por queda de métrica ou por desvio de distribuição — e o que é preciso para reproduzir o
-treino.**</span>
+Não há calendário de retreinamento. Se uma nova coleta for feita no futuro, o
+modelo deve ser retreinado do zero (não incrementalmente): rodar
+`03-modelagem.ipynb` de novo sobre a base curada atualizada, repetindo a etapa
+de sensibilidade ao espaço de atributos — a composição do mercado pode mudar o
+suficiente para alterar qual espaço separa melhor os grupos.
 
 ## Relatório final
 
-<span style="color:red">**Aponte onde está o relatório que consolida todas as fases do
-projeto e, se houver, a apresentação de fechamento.**</span>
-
 | Artefato | Local |
 |:---|:---|
-| Relatório final | `docs/<arquivo>` ou `reports/<arquivo>` |
-| Apresentação | `docs/apresentacoes/<arquivo>` |
+| Relatório final (esta documentação) | `docs/` (publicado via MkDocs) |
+| Notebooks completos, com saída | `notebooks/00-dicionario-dados.ipynb` a `03-modelagem.ipynb` |
+| Aplicação | `src/deployment/app.py` |
+
+Não há apresentação de fechamento separada — a documentação em `docs/` cumpre
+esse papel.
 
 ## Revisão do projeto
 
-Retrospectiva de fechamento — o que levar para o próximo projeto.
+- **O que deu certo** — separar claramente o que é "falha de captura do
+  scraper" do que é "ausência real de negócio" evitou tanto descartar dado
+  bom (as duas variáveis opcionais que o Canvas pede) quanto manter dado ruim
+  (os 62 anúncios sem nenhum campo estruturado).
+- **O que poderia ter sido melhor** — a decisão de usar one-hot nas nominais
+  poderia ter sido testada mais cedo, antes de treinar o primeiro modelo
+  completo; teria economizado uma iteração de retreino.
+- **O que fazer diferente** — em um próximo projeto, rodar a comparação de
+  espaços de atributos (numérico × misto) como primeira coisa da modelagem,
+  não como reação a um resultado ruim.
 
-- **O que deu certo** — <span style="color:red">**a repetir.**</span>
-- **O que poderia ter sido melhor** — <span style="color:red">**sem atribuir culpa; o alvo é
-  o processo.**</span>
-- **O que fazer diferente** — <span style="color:red">**mudanças concretas de prática.**</span>
-
-<span style="color:red">**Registre também o que fica sob responsabilidade de quem após o
-encerramento: manutenção, acesso aos dados e ponto de contato.**</span>
+Manutenção e ponto de contato após o encerramento: Venicios
+(venicios1997@gmail.com) — projeto individual, sem equipe a transferir.

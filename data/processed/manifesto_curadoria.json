@@ -1,0 +1,25 @@
+{
+  "origem": "data/raw/anuncios_detalhados.csv",
+  "destino": "data/processed/anuncios_curados.parquet",
+  "linhas_entrada": 2565,
+  "colunas_entrada": 25,
+  "linhas_saida": 2479,
+  "colunas_saida": 28,
+  "registros_removidos": 86,
+  "pct_registros_removidos": 3.35,
+  "fator_extremo": 3.0,
+  "colunas_derivadas": [
+    "idade_veiculo",
+    "km_por_ano",
+    "zero_km",
+    "desconto_fipe_pct"
+  ],
+  "ajustes": 14,
+  "ajustes_por_acao": {
+    "removido": 6,
+    "verificado, sem ação": 5,
+    "imputado": 2,
+    "corrigido": 1
+  },
+  "equivalente_ao_pipeline": true
+}

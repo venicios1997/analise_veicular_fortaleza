@@ -1,0 +1,4 @@
+﻿criterio;medido;aprovado
+Número de segmentos entre 4 e 8;5,0;True
+Silhueta >= 0.4;0,5423;True
+Nenhum segmento com menos de 50 anúncios;60,0;True

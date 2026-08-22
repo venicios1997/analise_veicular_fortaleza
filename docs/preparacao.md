@@ -4,111 +4,88 @@ Esta página descreve **o que foi feito com os dados** entre a origem e a análi
 são materializados, que regras de limpeza foram aplicadas e como a transformação é
 conferida.
 
-!!! tip "Como preencher esta página"
-    Preencha em par com [Entendimento dos dados](entendimento-dados.md): lá ficam os achados
-    de qualidade, aqui ficam as decisões tomadas a respeito deles.
-
-    Regras práticas:
-
-    - separe os dados em **camadas** e trate a camada bruta como imutável — reprocessar deve
-      sempre partir dela, nunca de um arquivo editado à mão;
-    - toda regra de limpeza vem acompanhada do **motivo**; regra sem motivo é removida na
-      primeira refatoração e o problema volta;
-    - a carga precisa ser **idempotente**: reexecutar não pode duplicar dado nem exigir
-      recomeçar do zero;
-    - registre as **conferências** que provam que a transformação não perdeu nem inventou
-      dado — é o que permite confiar nos números depois;
-    - decisão sobre outlier é decisão de negócio, não de código: declare se o extremo é
-      legítimo e o que foi feito com ele.
-
 ## Arquitetura em camadas
 
 ```mermaid
 flowchart TD
-    A["Origem<br/>formato e volume"] -->|"módulo de ingestão"| B
-    B["data/raw<br/>cópia imutável"] -->|"módulo de preparação"| C
-    C["data/processed/base curada<br/>colunas selecionadas e limpas"] --> D
-    D["data/processed/agregados<br/>um por objetivo"]
+    A["OLX + FIPE<br/>scraping + API pública"] -->|"src.data.ingestao"| B
+    B["data/raw<br/>3 CSVs imutáveis"] -->|"src.data.preparacao"| C
+    C["data/processed/anuncios_curados.parquet<br/>2.479 anúncios, 28 colunas"] --> D
+    D["data/processed/anuncios_segmentados.parquet<br/>+ coluna segmento, notebook 03"]
 ```
 
 | Camada | Diretório | Papel |
 |:---|:---|:---|
-| Bruta | `data/raw` | cópia imutável da origem |
-| Curada | `data/processed/<base curada>` | colunas selecionadas, tipadas e limpas |
-| Agregada | `data/processed/<agregados>` | um agregado por objetivo de negócio |
+| Bruta | `data/raw` | cópia imutável da coleta (3 CSVs) |
+| Curada | `data/processed/anuncios_curados.parquet` | colunas limpas, ausência tratada, atributos derivados |
+| Segmentada | `data/processed/anuncios_segmentados.parquet` | a curada + coluna `segmento` (saída da modelagem) |
 
 ## Materialização da camada bruta
 
-<span style="color:red">**Explique como a origem é copiada para `data/raw`: em que
-granularidade, em que formato e por quê.**</span>
-
-```
-data/raw/nome_do_arquivo_particao=valor.parquet
-```
-
-<span style="color:red">**Diga se a operação é idempotente e o que garante isso (manifesto,
-arquivo de controle, conferência de contagem contra a origem).**</span>
-
-!!! note "Decisão técnica (opcional)"
-    Use um bloco como este para registrar uma escolha de implementação não óbvia —
-    ordenação, compressão, particionamento, uso de memória — e o motivo dela.
+`data/raw/` já é o resultado da coleta (ver [Fonte dos dados](fonte-dados.md)) —
+não há passo de cópia/particionamento adicional neste repositório. A leitura é
+feita por `src.data.ingestao.carregar_bruto()`, que lê os 3 CSVs e mescla o
+valor de FIPE; é idempotente (sempre lê os mesmos arquivos de entrada e produz
+o mesmo resultado — não há efeito colateral em disco na leitura).
 
 ## Regras de limpeza
 
-<span style="color:red">**Indique onde as regras estão implementadas e se são aplicadas em
-uma única passada.**</span>
+Implementadas em `src/data/preparacao.py` (lista `REGRAS_LIMPEZA`, publicada
+programaticamente — o notebook e o módulo compartilham a mesma fonte) e
+narradas célula a célula em `02-ajustes-dados.ipynb`.
 
 | # | Regra | Motivo |
 |:-:|:---|:---|
-| 1 | &lt;o que a regra faz&gt; | &lt;por que ela é necessária&gt; |
-| 2 | &lt;o que a regra faz&gt; | &lt;por que ela é necessária&gt; |
-| 3 | &lt;o que a regra faz&gt; | &lt;por que ela é necessária&gt; |
+| 1 | Remover anúncios com `link` duplicado | 5 links aparecem duas vezes — falha pontual na dedupe incremental da coleta, não dois anúncios distintos |
+| 2 | Remover anúncios com falha total do bloco `dataLayer` | 62 anúncios têm as 7 colunas núcleo vazias ao mesmo tempo — falha de captura do scraper, não ausência real |
+| 3 | Remover o anúncio sem `ano` | 1 registro; `ano` não tem substituto plausível |
+| 4 | Remover o registro com `km = 999.998` | valor de preenchimento/erro de digitação, não corrigível por comparação com outra coluna |
+| 5 | Rotular `NaoInformado` a ausência real e opcional (câmbio, combustível, carroceria, portas, aceita_troca, único_dono, bairro, cor, motor, tipo) | ausência legítima e baixa (até 24,7%) — categoria explícita, nenhum valor inventado |
+| 6 | Derivar `idade_veiculo`, `km_por_ano`, `zero_km` e `desconto_fipe_pct` | idade na data da coleta e intensidade de uso separam veículos melhor que o ano absoluto sozinho |
+| 7 | Remover valores além de 3×IQR em `ano`/`km` | a cerca clássica de Tukey (1,5×IQR) alcançaria carros antigos/alta km genuínos — o segmento que a clusterização precisa isolar, não descartar |
+| 8 | Descartar colunas concentradas acima de 99% num único valor | não separam nada; a única que passa do limiar é `data_coleta` (coleta de um único dia), que já não fazia parte do espaço de atributos |
 
-??? note "Regras que costumam aparecer aqui"
-    - seleção das colunas que sustentam os objetivos, para reduzir uma tabela larga a um
-      conjunto navegável;
-    - normalização de texto (`trim`, caixa, acentuação) — sem isso a mesma categoria vira
-      várias;
-    - conversão de sentinelas em `NULL`, com as exceções deliberadas declaradas;
-    - `coalesce` nas métricas, para que somas não virem nulo;
-    - renomeação de rótulos longos, para que gráficos e tabelas fiquem legíveis;
-    - derivação de colunas novas a partir das existentes.
-
-<span style="color:red">**Se houver dicionário de dados, diga onde ele fica e se registra a
-expressão que origina cada coluna curada — é o que mantém a rastreabilidade até o campo
-bruto.**</span>
+Diferente de um projeto de referência que usa um limiar único de ausência
+(>5% → descarta coluna), aqui **não há esse corte único**: ele descartaria
+`aceita_troca` (24,7%) e `unico_dono` (16,1%), duas variáveis que o Canvas do
+Problema pede. Cada natureza de ausência recebe o tratamento que ela pede —
+falha de captura vira remoção de linha; ausência opcional vira categoria.
 
 ## Conferências
 
-Validações executadas antes de seguir para a análise:
-
-- **contagem de linhas** — &lt;o que é comparado com o quê&gt;;
-- **métricas** — &lt;quais somas precisam bater entre camadas&gt;;
-- **efeito da limpeza** — &lt;cardinalidade antes e depois nas dimensões afetadas&gt;;
-- **perfil de qualidade** — &lt;onde o relatório de nulos e cardinalidade é gravado&gt;;
-- **totais dos agregados** — &lt;cada agregado reproduz o total do seu recorte&gt;.
+- **Nulos no espaço de atributos** — `assert` no notebook: 0 células vazias
+  fora da FIPE reservada (que mantém ~2,5% de nulo, deliberadamente);
+- **Equivalência com o pipeline** — `preparacao.construir_base_curada()` roda
+  de novo dentro do próprio notebook e é comparada célula a célula com o
+  resultado narrado; o notebook confirma "Sem divergência" antes de gravar;
+- **Assimetria** — `dic.ASSIMETRICAS = ["km"]` conferido contra a assimetria
+  medida na base curada (0,94 para `km`; `ano` chega a −1,19 mas com sinal
+  negativo, e `log1p` só corrige cauda à direita);
+- **Funil de remoção** — `reports/figures/ajustes-dados/funil-da-curadoria.png`
+  mostra quantos anúncios saem em cada bloco.
 
 ## Agregados
 
-Um agregado por objetivo de negócio, no menor grão que aquele objetivo precisa.
+Não há agregado por objetivo de negócio nesta fase — o grão permanece
+"um registro por anúncio" do início ao fim do pipeline. O único artefato
+adicional é a matriz de modelagem (`data/processed/matriz_modelagem.parquet`),
+um recorte de colunas da base curada, sem agregação:
 
 | Agregado | Objetivo | Grão |
 |:---|:-:|:---|
-| `nome_do_agregado` | &lt;n&gt; | &lt;dimensões que compõem o grão&gt; |
-| `nome_do_agregado` | &lt;n&gt; | &lt;dimensões que compõem o grão&gt; |
-
-A coluna **Objetivo** referencia a numeração dos [critérios de sucesso](criterios-sucesso.md).
+| `matriz_modelagem.parquet` | 1 | anúncio (mesmo grão da base curada, só com as colunas do espaço de atributos + reservadas) |
 
 ## Tratamento de outliers
 
-<span style="color:red">**Declare se os valores extremos são legítimos, se foram removidos
-ou mantidos, e o que é usado onde o extremo distorce a leitura (mediana, corte por quantil,
-escala logarítmica).**</span>
+Valores extremos em `ano`/`km` são reais, não erro de cadastro — por isso o
+corte usa 3×IQR (não 1,5×): a cerca clássica de Tukey marcaria 3,5%/2,4% da
+base e removeria justamente o segmento de carros antigos/alta quilometragem
+que a segmentação existe para isolar como grupo à parte. Detalhe completo em
+[Modelagem dos dados](modelagem.md#pre-processamento).
 
 ## Reprodução
 
 ```bash
-# comandos que refazem cada camada
-uv run invoke ingestao      # data/raw
-uv run invoke preparacao    # data/processed
+# refaz a base curada e a matriz de modelagem a partir de data/raw
+uv run invoke preparacao
 ```

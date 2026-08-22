@@ -1,0 +1,78 @@
+{
+  "algoritmo": "k-means",
+  "parametros": {
+    "init": "k-means++",
+    "n_clusters": "5"
+  },
+  "n_segmentos": 5,
+  "silhueta": 0.5423,
+  "davies_bouldin": 0.5425,
+  "calinski_harabasz": 6669.8,
+  "limiar_categoria_rara": 20,
+  "espaco_de_atributos": [
+    "ano",
+    "km",
+    "marca",
+    "cambio",
+    "combustivel",
+    "carroceria",
+    "portas",
+    "vendedor_tipo",
+    "aceita_troca",
+    "unico_dono",
+    "municipio",
+    "zero_km"
+  ],
+  "segmentos": {
+    "1": {
+      "anuncios": 84,
+      "participacao_pct": 3.4,
+      "preco_mediano": 149990.0,
+      "km_mediano": 0.0,
+      "idade_mediana": 0.0,
+      "desconto_fipe_medio_pct": -5.98,
+      "marca_mais_comum": "BYD",
+      "carroceria_mais_comum": "Hatch"
+    },
+    "2": {
+      "anuncios": 1020,
+      "participacao_pct": 41.1,
+      "preco_mediano": 99495.0,
+      "km_mediano": 43953.0,
+      "idade_mediana": 2.0,
+      "desconto_fipe_medio_pct": -0.61,
+      "marca_mais_comum": "Fiat",
+      "carroceria_mais_comum": "Hatch"
+    },
+    "3": {
+      "anuncios": 1029,
+      "participacao_pct": 41.5,
+      "preco_mediano": 41900.0,
+      "km_mediano": 117000.0,
+      "idade_mediana": 12.0,
+      "desconto_fipe_medio_pct": 2.99,
+      "marca_mais_comum": "Chevrolet",
+      "carroceria_mais_comum": "Hatch"
+    },
+    "4": {
+      "anuncios": 60,
+      "participacao_pct": 2.4,
+      "preco_mediano": 24950.0,
+      "km_mediano": 200.0,
+      "idade_mediana": 16.5,
+      "desconto_fipe_medio_pct": -25.36,
+      "marca_mais_comum": "Fiat",
+      "carroceria_mais_comum": "Hatch"
+    },
+    "0": {
+      "anuncios": 286,
+      "participacao_pct": 11.5,
+      "preco_mediano": 14994.5,
+      "km_mediano": 163000.0,
+      "idade_mediana": 24.0,
+      "desconto_fipe_medio_pct": -8.25,
+      "marca_mais_comum": "Volkswagen",
+      "carroceria_mais_comum": "Hatch"
+    }
+  }
+}

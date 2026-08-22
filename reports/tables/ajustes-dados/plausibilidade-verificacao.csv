@@ -1,0 +1,6 @@
+﻿regra;registros;pct;situacao
+km negativa;0;0,0;verificada
+ano fora de uma faixa plausível (antes de 1950 ou mais de 1 ano à frente da coleta);0;0,0;verificada
+km muito alta para a idade do veículo (> 100.000 km/ano);1;0,04;verificada
+quilometragem zero em veículo com mais de 2 anos;22;0,88;verificada
+preço muito abaixo da FIPE (menos de 30% do valor de referência);5;0,2;verificada

@@ -1,0 +1,11 @@
+﻿;categoria;grupo;distancia
+0;Buggy;Manual;0,32
+1;Caminhão Leve;Manual;0,32
+2;Conversível;Automático;0,549
+3;Coupé;Automático;0,474
+4;Hatch;Manual;0,047
+5;Perua;Manual;0,268
+6;Pick-up;Automático;0,429
+7;SUV;Automático;0,275
+8;Sedã;Manual;0,545
+9;Van/Utilitário;Manual;0,196

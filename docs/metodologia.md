@@ -1,6 +1,7 @@
 # Metodologia
 
-O projeto será desenvolvido seguindo a metodologia de ciência de dados da área de governança de dados da organização.
+O projeto segue o CRISP-DM, a metodologia padrão de ciência de dados adotada pela
+disciplina de Aprendizado de Máquina Não Supervisionado.
 
 ## CRISP-DM
 
@@ -109,9 +110,9 @@ No que tange ao campo ciência de dados dentro de projetos que envolvem essa ár
 
 |Ferramenta            | Descrição                            |
 |:---------------------|:--------------------------------     |
-|:simple-github: Gitlab|Gerenciar o controle de versões.      |
+|:simple-github: GitHub|Gerenciar o controle de versões.      |
 |:simple-uv: uv|Para gerenciamento de libs do projeto.|
 |:simple-python: uv python|Controle de versões do python.        |
 |:simple-jupyter:Jupyter notebook|Ambiente para escrever os scripts necessários.|
-|:fontawesome-solid-list-check: Python|Realizar as atividades de ETL, análise exploratória dos dados e construção de modelos preditivos, bem como atividades relacionadas.|
-|:material-bookshelf: Bibliotecas|Pandas, numpy Scrapy, Selenium, requests, scikit-learn, Matplotlib, Seaborn, Plotly, Folium.|
+|:fontawesome-solid-list-check: Python|Coleta (Playwright), análise exploratória, preparação e clusterização dos dados, aplicação de implantação.|
+|:material-bookshelf: Bibliotecas|pandas, numpy, scipy, scikit-learn, matplotlib, seaborn, prince, circlify, joblib, streamlit.|

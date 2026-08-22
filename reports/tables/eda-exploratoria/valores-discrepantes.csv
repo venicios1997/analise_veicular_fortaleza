@@ -1,0 +1,5 @@
+﻿;variavel;discrepantes;percentual;limite_inferior;limite_superior;menor_discrepante;maior_discrepante
+2;preco;90;3,53;-73735,0;210625,0;210900,0;250000,0
+1;valor_fipe_final;70;2,82;-74214,0;213010,0;213810,0;322821,0
+3;km;63;2,47;-95000,0;265000,0;266000,0;999998,0
+0;ano;46;1,8;1994,0;2042,0;1972,0;1993,0

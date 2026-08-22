@@ -19,6 +19,18 @@ def app(c):
 
 
 @task
+def notebooks(c):
+    """Executa todos os notebooks em ordem e falha se algum quebrar."""
+    c.run("python -m src.utils.executar_notebooks")
+
+
+@task
+def preparacao(c):
+    """Refaz a base curada (data/processed) a partir da base bruta imutável."""
+    c.run("python -m src.data.preparacao")
+
+
+@task
 def docs(c):
     """Serve a documentação localmente em http://127.0.0.1:8000."""
     c.run("mkdocs serve")

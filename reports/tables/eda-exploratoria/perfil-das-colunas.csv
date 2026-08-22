@@ -1,0 +1,15 @@
+﻿variavel;tipo;distintos;ausentes;%ausentes;minimo;mediana;maximo;assimetria;curtose
+preco;Discreta;894;0;0,0;5000;57900.0;250000;1.09;0.56
+km;Discreta;1142;0;0,0;0;82000.0;999998;2.58;17.25
+ano;Contínua;53;1;0,04;1972.0;2018.0;2027.0;-1.26;2.12
+marca;Nominal;42;62;2,43;—;—;—;—;—
+cambio;Nominal;4;119;4,67;—;—;—;—;—
+combustivel;Nominal;6;92;3,61;—;—;—;—;—
+carroceria;Nominal;10;224;8,78;—;—;—;—;—
+portas;Nominal;3;126;4,94;—;—;—;—;—
+bairro;Nominal;182;130;5,1;—;—;—;—;—
+municipio;Nominal;27;62;2,43;—;—;—;—;—
+vendedor_tipo;Nominal;2;62;2,43;—;—;—;—;—
+aceita_troca;Nominal;2;702;27,53;—;—;—;—;—
+unico_dono;Nominal;2;477;18,71;—;—;—;—;—
+valor_fipe_final;Contínua;1611;72;2,82;3180.0;57975.5;322821.0;1.1;0.69

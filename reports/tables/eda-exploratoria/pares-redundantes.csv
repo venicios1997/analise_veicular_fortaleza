@@ -1,0 +1,5 @@
+﻿variavel_a;variavel_b;correlacao
+valor_fipe_final;preco;0,984
+bairro;municipio;0,893
+ano;valor_fipe_final;0,814
+ano;preco;0,806

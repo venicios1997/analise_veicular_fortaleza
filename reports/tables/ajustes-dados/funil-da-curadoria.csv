@@ -1,0 +1,7 @@
+﻿;etapa;registros;removidos;pct_do_total
+0;Base bruta;2565;0;100,0
+1;Remover anúncios com `link` repetido;2560;5;99,8
+2;Remover anúncios com falha total do bloco `dataLayer`;2498;62;97,4
+3;Remover o anúncio sem `ano`;2497;1;97,3
+4;Remover o anúncio com `km` = 999.998;2496;1;97,3
+5;Remover valores além de 3xIQR em ano/km;2479;17;96,6

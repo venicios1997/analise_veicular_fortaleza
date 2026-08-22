@@ -1,0 +1,7 @@
+﻿linhas;colunas;inercia_2d;figura
+carroceria;cambio;99,97;True
+combustivel;cambio;99,94;True
+marca;cambio;99,02;True
+carroceria;combustivel;87,35;True
+marca;combustivel;77,06;False
+marca;carroceria;57,13;False

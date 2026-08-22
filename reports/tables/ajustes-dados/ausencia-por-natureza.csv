@@ -1,0 +1,20 @@
+﻿;variavel;ausentes;percentual;natureza
+0;aceita_troca;703;27,46;opcional (não informado)
+1;unico_dono;479;18,71;opcional (não informado)
+2;valor_fipe_olx;237;9,26;outra
+3;carroceria;225;8,79;falha de captura (dataLayer)
+4;tipo;165;6,45;opcional (não informado)
+5;bairro;130;5,08;opcional (não informado)
+6;portas;126;4,92;falha de captura (dataLayer)
+7;cambio;119;4,65;falha de captura (dataLayer)
+8;combustivel;92;3,59;falha de captura (dataLayer)
+9;cor;77;3,01;opcional (não informado)
+10;valor_fipe_final;73;2,85;reservada (FIPE)
+11;motor;69;2,7;opcional (não informado)
+12;versao;62;2,42;outra
+13;modelo;62;2,42;outra
+14;marca;62;2,42;falha de captura (dataLayer)
+15;vendedor_tipo;62;2,42;falha de captura (dataLayer)
+16;municipio;62;2,42;falha de captura (dataLayer)
+17;data_coleta;27;1,05;outra
+18;ano;1;0,04;outra

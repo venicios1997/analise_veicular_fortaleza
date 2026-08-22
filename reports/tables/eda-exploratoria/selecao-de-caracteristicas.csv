@@ -1,0 +1,15 @@
+﻿variavel;tipo;decisao;motivo
+aceita_troca;Nominal;mantida;sem redundância acima do limiar
+ano;Contínua;mantida;sem redundância acima do limiar
+cambio;Nominal;mantida;sem redundância acima do limiar
+carroceria;Nominal;mantida;sem redundância acima do limiar
+combustivel;Nominal;mantida;sem redundância acima do limiar
+km;Discreta;mantida;sem redundância acima do limiar
+marca;Nominal;mantida;sem redundância acima do limiar
+municipio;Nominal;mantida;sem redundância acima do limiar
+portas;Nominal;mantida;sem redundância acima do limiar
+unico_dono;Nominal;mantida;sem redundância acima do limiar
+vendedor_tipo;Nominal;mantida;sem redundância acima do limiar
+bairro;Nominal;reservada;proxy de localização, reservada para validação externa
+preco;Discreta;reservada;rótulo reservado para a avaliação a posteriori
+valor_fipe_final;Contínua;reservada;derivada de marca/modelo/ano, reservada para leitura de oportunidade

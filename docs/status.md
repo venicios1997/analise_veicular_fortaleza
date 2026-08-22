@@ -1,37 +1,40 @@
 # Status do projeto
 
-???+ abstract "Fase 1: Preparação do ambiente"
-    - [ ] Criar repositório gitlab
-    - [ ] Instalar ferramentas do projeto
-    
+???+ success "Fase 1: Preparação do ambiente"
+    - [x] Criar repositório GitHub
+    - [x] Instalar ferramentas do projeto
 
-???+ abstract "Fase 2: Entendimento de negócio"
-    - [ ] Elaborar projeto inicial
-    - [ ] Produzir relatório mineração dos dados
+???+ success "Fase 2: Entendimento de negócio"
+    - [x] Elaborar projeto inicial
+    - [x] Produzir relatório de mineração dos dados
 
-???+ abstract "Fase 3: Entendimento dos dados"    
-    - [ ] Gerar conjunto de dados
-    - [ ] Produzir relatório qualidade dos dados
-    - [ ] Realizar descrição dos dados
-    - [ ] Realizar análise exploratória
-    - [ ] Produzir relatório do entendimento dos dados
+???+ success "Fase 3: Entendimento dos dados"
+    - [x] Gerar conjunto de dados
+    - [x] Produzir relatório de qualidade dos dados
+    - [x] Realizar descrição dos dados
+    - [x] Realizar análise exploratória
+    - [x] Produzir relatório do entendimento dos dados
 
-???+ abstract "Fase 4: Preparação dos dados"
-    - [ ] Gerar script de limpeza dos dados
-    - [ ] Gerar conjunto de dados processado
-    - [ ] Produzir relatório preparação dos dados
+???+ success "Fase 4: Preparação dos dados"
+    - [x] Gerar script de limpeza dos dados
+    - [x] Gerar conjunto de dados processado
+    - [x] Produzir relatório de preparação dos dados
 
-???+ abstract "Fase 5: Modelagem"
-    - [ ] Gerar desenho do experimento da modelagem
-    - [ ] Gerar script da modelagem
-    - [ ] Produzir relatório com os resultados
+???+ success "Fase 5: Modelagem"
+    - [x] Gerar desenho do experimento da modelagem
+    - [x] Gerar script da modelagem
+    - [x] Produzir relatório com os resultados
 
-???+ abstract "Fase 6: Avaliação"
-    - [ ] Produzir relatório da avaliação dos resultados
-    - [ ] Produzir relatório das próximas etapas
+???+ success "Fase 6: Avaliação"
+    - [x] Produzir relatório da avaliação dos resultados
+    - [x] Produzir relatório das próximas etapas
 
-???+ abstract "Fase 7: Implementação"
-    - [ ] Gerar desenho da implementação
-    - [ ] Desenvolver script da implementação
-    - [ ] Produzir relatório de monitoramento e manutenção dos modelos
-    - [ ] Produzir relatório final contendo todas as fases anteriores
+???+ success "Fase 7: Implementação"
+    - [x] Gerar desenho da implementação
+    - [x] Desenvolver script da implementação
+    - [x] Produzir relatório de monitoramento e manutenção dos modelos
+    - [x] Produzir relatório final contendo todas as fases anteriores
+
+Todas as 7 fases estão concluídas. O projeto está na condição **implantar**
+(ver [decisão em Avaliação dos resultados](avaliacao.md#proximas-etapas)) — sem
+iteração pendente.
