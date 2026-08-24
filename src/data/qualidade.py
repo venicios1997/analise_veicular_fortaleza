@@ -83,7 +83,7 @@ def resumo_numericas(dados: pd.DataFrame, colunas: list[str]) -> pd.DataFrame:
 
 
 #: Regras de plausibilidade do domínio de veículos usados: nome, colunas
-#: exigidas e o teste. Diferente do projeto de referência (imóveis), nenhuma
+#: exigidas e o teste. Nenhuma
 #: regra aqui tem uma autoridade externa citável para justificar remoção
 #: automática — por isso `valores_implausiveis` é usada só para **registrar**
 #: o achado; a decisão de remover (ou não) é tomada à parte, com evidência

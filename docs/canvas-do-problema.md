@@ -2,8 +2,7 @@
 
 Documento de planejamento do projeto — definido **antes** da coleta e da
 análise, e mantido aqui sem retrospectiva: o que o modelo efetivamente entregou
-está em [Avaliação dos resultados](avaliacao.md) e no
-[Relatório final](relatorio-final.md).
+está em [Avaliação dos resultados](avaliacao.md).
 
 ## 1. Contexto de negócio
 
@@ -261,4 +260,5 @@ dimensão).
 > mercado que auxiliem pequenas revendas a direcionar seus recursos para grupos
 > de veículos mais adequados à sua estratégia de estoque.
 
-Confirmada — ver a resposta completa em [Relatório final](relatorio-final.md).
+Confirmada — ver [Avaliação dos resultados](avaliacao.md) para o confronto
+completo com os critérios de aceite.

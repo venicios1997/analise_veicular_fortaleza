@@ -1,10 +1,9 @@
 """Dicionário de dados: papel de cada coluna no projeto.
 
 Este módulo é a **fonte única da verdade** sobre o papel de cada coluna da
-base bruta de anúncios (`data/raw/anuncios_detalhados.csv`). Diferente do
-projeto de referência (Ames Housing), as colunas já chegam em `snake_case`
-português — não há camada de renomeação a partir de um nome original em
-inglês.
+base bruta de anúncios (`data/raw/anuncios_detalhados.csv`). As colunas já
+chegam em `snake_case` português — não há camada de renomeação a partir de
+um nome original em inglês.
 
 Três decisões registradas aqui, e não no código de análise:
 

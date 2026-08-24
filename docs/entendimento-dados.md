@@ -42,9 +42,9 @@ análise").
 
 ### Valores sentinela
 
-Diferente de bases públicas clássicas (ex.: Ames Housing), a leitura padrão do
-`pandas` já trata corretamente os vazios deste CSV — não há sentinela textual
-(`"NA"`, `"-"`) a decodificar manualmente. A única sentinela numérica encontrada
+A leitura padrão do `pandas` já trata corretamente os vazios deste CSV — não
+há sentinela textual (`"NA"`, `"-"`) a decodificar manualmente. A única
+sentinela numérica encontrada
 foi descoberta na análise, não na leitura:
 
 | Sentinela | Significado |
@@ -61,11 +61,10 @@ corrigido — não há como inferir o valor real).
    vendedor, município) ficam vazias **juntas** quando o bloco falha ao
    carregar — falha do scraper, não ausência de informação do anúncio. Esses
    registros são removidos (`02-ajustes-dados.ipynb`, bloco 3), não imputados.
-2. **Ausência real e legítima, não estrutural**: diferente de bases de imóveis
-   (onde `NA` pode significar "sem porão"), aqui todo carro tem marca e
+2. **Ausência real e legítima, não estrutural**: todo carro tem marca e
    câmbio — o que falta é real. `aceita_troca` (24,7%) e `unico_dono` (16,1%)
    dependem do vendedor informar; viram categoria explícita `NaoInformado` em
-   vez de serem descartadas (o limiar de 5% de um projeto de referência teria
+   vez de serem descartadas (um limiar único de 5% de ausência teria
    jogado fora essas duas variáveis, que o Canvas do Problema pede).
 3. **`preco` e `valor_fipe_final` correlacionam em 0,98** (Spearman) — a FIPE é,
    por construção, quase um espelho do preço pedido. Por isso fica reservada

@@ -18,8 +18,7 @@ A coluna **Objetivo** referencia a numeração dos [critérios de sucesso](crite
 O notebook `01-analise-exploratoria.ipynb` segue um roteiro de **8 etapas**, aplicado
 sobre `ano`, `km`, as 9 nominais do espaço de atributos e as 3 reservadas (`preco`,
 `bairro`, `valor_fipe_final`) — a mesma coluna que a análise de negócio usa depois,
-sem recorte adicional (a base bruta já tem só 23 colunas, contra as 82 de um
-projeto de referência sobre imóveis).
+sem recorte adicional (a base bruta já tem só 23 colunas).
 
 | Seção | Técnica | O que responde |
 |:---|:---|:---|
@@ -32,7 +31,7 @@ projeto de referência sobre imóveis).
 | Valores discrepantes | critério de Tukey (IQR × 1,5) | há valor implausível em `preco`/`km`/`ano`/`valor_fipe_final`? |
 | Correlação | Spearman (numérica×numérica), V de Cramér (nominal×nominal), η (nominal×numérica) | quais variáveis são redundantes? |
 
-Duas etapas do roteiro de um projeto de referência (base de imóveis) **não se
+Duas etapas deste roteiro **não se
 aplicam** aqui, e por isso ficam de fora: características **ordinais** (esta
 base não declara nenhuma escala do tipo `Ex > Gd > TA`) e características de
 **tempo** (a coleta é de um único dia — `data_coleta` tem 1 valor distinto).

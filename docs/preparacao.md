@@ -45,8 +45,8 @@ narradas célula a célula em `02-ajustes-dados.ipynb`.
 | 7 | Remover valores além de 3×IQR em `ano`/`km` | a cerca clássica de Tukey (1,5×IQR) alcançaria carros antigos/alta km genuínos — o segmento que a clusterização precisa isolar, não descartar |
 | 8 | Descartar colunas concentradas acima de 99% num único valor | não separam nada; a única que passa do limiar é `data_coleta` (coleta de um único dia), que já não fazia parte do espaço de atributos |
 
-Diferente de um projeto de referência que usa um limiar único de ausência
-(>5% → descarta coluna), aqui **não há esse corte único**: ele descartaria
+Um limiar único de ausência
+(>5% → descarta coluna) descartaria
 `aceita_troca` (24,7%) e `unico_dono` (16,1%), duas variáveis que o Canvas do
 Problema pede. Cada natureza de ausência recebe o tratamento que ela pede —
 falha de captura vira remoção de linha; ausência opcional vira categoria.

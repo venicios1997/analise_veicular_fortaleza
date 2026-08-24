@@ -1,6 +1,6 @@
 """CRISP-DM 2.1 — Coleta dos dados iniciais.
 
-Diferente do projeto de referência, não há download de uma base pública: a
+Não há download de uma base pública: a
 camada bruta já é o resultado do scraping da OLX (`Software/coleta/`),
 materializada uma única vez em ``data/raw/``. Esta ingestão faz duas coisas:
 

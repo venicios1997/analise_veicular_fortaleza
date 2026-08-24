@@ -18,7 +18,6 @@ nav:
   - Avaliação dos resultados: avaliacao.md
   - Implementação: implementacao.md
   - Status do projeto: status.md
-  - Relatório final: relatorio-final.md
 
 plugins:
   - search

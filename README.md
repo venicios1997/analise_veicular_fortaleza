@@ -43,12 +43,11 @@ persistidas em `reports/figures/` e as tabelas-fonte em `reports/tables/`.
 
 ### Documentação
 
-O relatório completo é o site MkDocs em `docs/`, com 14 páginas encadeadas —
+O relatório completo é o site MkDocs em `docs/`, com 13 páginas encadeadas —
 do [Canvas do Problema](docs/canvas-do-problema.md) ao
-[Relatório final](docs/relatorio-final.md), passando por entendimento de
-negócio, fonte e entendimento dos dados, análise exploratória, preparação,
-modelagem, avaliação, implementação e status. Publique localmente com
-`uv run invoke docs`.
+[Status do projeto](docs/status.md), passando por entendimento de negócio,
+fonte e entendimento dos dados, análise exploratória, preparação, modelagem,
+avaliação e implementação. Publique localmente com `uv run invoke docs`.
 
 ### A aplicação
 
@@ -103,7 +102,7 @@ materializada e imutável.
 
 ## Desenvolvedores
 
-- [Venicios](https://github.com/venicios1997) — autor único (coleta, análise, modelagem, implantação)
+- [Marcos Venicios de Andrade](https://github.com/venicios1997) — matrícula 2517819 — autor único (coleta, análise, modelagem, implantação)
 
 ## Organização de diretórios
 
