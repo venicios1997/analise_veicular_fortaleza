@@ -81,7 +81,10 @@ REGRAS_LIMPEZA: list[dict[str, str]] = [
     },
     {
         "regra": "Remover o anúncio sem `ano`",
-        "motivo": "Um único registro; `ano` é a variável mais central da caracterização e não tem substituto plausível.",
+        "motivo": (
+            "Um único registro; `ano` é a variável mais central da caracterização "
+            "e não tem substituto plausível."
+        ),
     },
     {
         "regra": f"Remover o registro com `km` = {KM_SENTINELA:,}".replace(",", "."),
@@ -344,4 +347,5 @@ if __name__ == "__main__":
     modelo = construir_matriz_modelagem(base)
     print(f"Base curada:         {base.shape[0]} x {base.shape[1]}")
     print(f"Matriz de modelagem: {modelo.shape[0]} x {modelo.shape[1]}")
-    print(f"Nulos na matriz (fora das reservadas): {int(modelo[dic.ESPACO_MISTO].isna().sum().sum())}")
+    nulos = int(modelo[dic.ESPACO_MISTO].isna().sum().sum())
+    print(f"Nulos na matriz (fora das reservadas): {nulos}")

@@ -171,8 +171,9 @@ recentes (R$ 99,5 mil) e populares usados (R$ 41,9 mil). Ver
 **Resposta:** o segmento 3 (populares usados) tem desconto médio de **+3,0%**
 sobre a FIPE — a única leitura de desconto positivo entre os 5 segmentos — e
 41,5% da base, a maior participação de mercado. Ver
-[Avaliação dos resultados](avaliacao.md) e a aba "Catálogo de segmentos" da
-aplicação.
+[Avaliação dos resultados](avaliacao.md) e a aba "Oportunidades comerciais" da
+aplicação, que também detalha o desconto médio por marca e carroceria dentro
+de cada segmento.
 
 ## 10. Restrições e riscos
 

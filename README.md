@@ -56,10 +56,20 @@ uv run invoke app
 ```
 
 Sobe em `http://localhost:8501`, roda inteiramente local (sem chamada de rede)
-e lê só o pipeline treinado (`models/modelo-segmentacao.joblib`) e o catálogo
-de segmentos (`models/catalogo_de_segmentos.json`). Três abas: classificar um
-anúncio novo (por ano e km), catálogo dos 5 segmentos com leitura de
-oportunidade comercial, e o mapa preço × km colorido por segmento.
+e lê o pipeline treinado (`models/modelo-segmentacao.joblib`), o catálogo de
+segmentos (`models/catalogo_de_segmentos.json`) e a base classificada
+(`data/processed/anuncios_segmentados.parquet`). Cinco abas:
+
+- **Sobre o projeto** — a dor de negócio, a pergunta central e um resumo do modelo;
+- **Classificar anúncio** — classifica um anúncio novo por ano/km, com histograma
+  de onde ele cai na distribuição do segmento e, se informado um preço de
+  compra, a margem estimada contra a mediana de venda do segmento;
+- **Catálogo de segmentos** — os 5 segmentos, filtráveis por marca/carroceria/
+  câmbio/faixa de preço (barra lateral), com exportação da lista filtrada em CSV;
+- **Oportunidades comerciais** — segmentos ordenados por desconto médio vs.
+  FIPE, com detalhamento por marca e carroceria dentro de cada segmento e
+  exportação em CSV;
+- **Mapa preço x km** — dispersão colorida por segmento, também filtrável.
 
 ## Utilização
 

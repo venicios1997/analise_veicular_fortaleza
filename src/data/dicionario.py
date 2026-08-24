@@ -169,7 +169,9 @@ DESCRICOES: dict[str, str] = {
     "zero_km": "Veículo com quilometragem zero (novo/seminovo de vitrine)",
     "idade_veiculo": "Idade do veículo em anos, calculada a partir de `config.ANO_REFERENCIA`",
     "km_por_ano": "Quilometragem média por ano de idade (intensidade de uso)",
-    "desconto_fipe_pct": "Desconto do preço anunciado em relação à FIPE, em % (avaliação a posteriori)",
+    "desconto_fipe_pct": (
+        "Desconto do preço anunciado em relação à FIPE, em % (avaliação a posteriori)"
+    ),
 }
 
 #: Rótulos curtos para gráficos.

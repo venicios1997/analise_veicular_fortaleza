@@ -12,7 +12,7 @@ serviço externo.
 
 | Entrega | Consumidor | Meio | Frequência |
 |:---|:---|:---|:---|
-| Classificação de anúncio + catálogo de segmentos | Pequena revenda (cenário do Canvas) | Aplicação Streamlit local | Sob demanda |
+| Classificação de anúncio, catálogo, oportunidades comerciais e mapa filtrável | Pequena revenda (cenário do Canvas) | Aplicação Streamlit local | Sob demanda |
 | Documentação do processo (esta publicação) | Quem avalia/revisa o projeto | Site MkDocs | Estática, atualizada a cada revisão |
 
 ```mermaid
@@ -23,10 +23,11 @@ flowchart LR
 ```
 
 A atualização é **manual**: rodar `uv run invoke notebooks` (ou os notebooks
-individualmente) regrava `models/modelo-segmentacao.joblib` e
-`models/catalogo_de_segmentos.json`; a aplicação lê esses arquivos a cada
-inicialização (com `st.cache_resource`/`st.cache_data`, então precisa ser
-reiniciada para pegar um modelo novo).
+individualmente) regrava `models/modelo-segmentacao.joblib`,
+`models/catalogo_de_segmentos.json` e `data/processed/anuncios_segmentados.parquet`;
+a aplicação lê esses três arquivos a cada inicialização (com
+`st.cache_resource`/`st.cache_data`, então precisa ser reiniciada para pegar um
+modelo novo).
 
 ## Monitoramento e manutenção
 

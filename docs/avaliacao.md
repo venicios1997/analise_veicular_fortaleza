@@ -16,14 +16,14 @@ processo foi conduzido corretamente, e o que fazer em seguida.
 | 2 | ≥ 2 oportunidades comerciais identificadas | atendido — segmentos 3 e 2 (desconto +3,0% e −0,6% vs. FIPE) | `reports/tables/modelagem/oportunidades-comerciais.csv` |
 | 2 | Validação externa contra variável fora da modelagem | atendido — `bairro` varia entre segmentos | seção "Validação externa" do notebook 03 |
 | 3 | Aplicação classifica anúncio novo | atendido | `src/deployment/app.py`, aba "Classificar anúncio" |
-| 3 | Aplicação mostra catálogo e mapa | atendido | abas "Catálogo de segmentos" e "Mapa preço x km" |
+| 3 | Aplicação mostra catálogo, oportunidades e mapa | atendido | abas "Catálogo de segmentos", "Oportunidades comerciais" e "Mapa preço x km" |
 | 3 | Roda local sem retreinar | atendido | `uv run invoke app` carrega `models/modelo-segmentacao.joblib` |
 
 **Leitura consolidada:** os 10 critérios de aceite dos 3 objetivos foram
 atendidos. Nenhum ficou parcial ou não atendido — o único ajuste feito ao longo
 do projeto foi ao próprio critério de volume mínimo por segmento: a primeira
-tentativa usava "≥ 5% da base" (mais um número redondo herdado de um projeto de
-referência do que uma exigência real do Canvas), que reprovaria dois segmentos
+tentativa usava "≥ 5% da base" (um número redondo sem exigência real do
+Canvas por trás), que reprovaria dois segmentos
 genuinamente interpretáveis (zero-km/elétricos, 3,4%; carros antigos de
 baixíssima km, 2,4%). O critério foi substituído por um piso absoluto de 50
 anúncios — volume mínimo para leitura estatística confiável — decisão registrada

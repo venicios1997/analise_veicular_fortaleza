@@ -35,9 +35,9 @@ def carregar_bruto() -> pd.DataFrame:
     fallback = pd.read_csv(config.ARQUIVO_FIPE_FALLBACK)
     # Um link aparece duas vezes no fallback (reprocessamento pontual); fica
     # a última tentativa — mesmo tratamento do notebook 01.
-    fallback_valor = (
-        fallback.drop_duplicates("link", keep="last").set_index("link")["valor_fipe_api"]
-    )
+    fallback_valor = fallback.drop_duplicates("link", keep="last").set_index("link")[
+        "valor_fipe_api"
+    ]
 
     bruto["valor_fipe_final"] = bruto["valor_fipe_olx"].fillna(bruto["link"].map(fallback_valor))
     bruto["fonte_fipe"] = pd.Series("não encontrada", index=bruto.index, dtype="object")
