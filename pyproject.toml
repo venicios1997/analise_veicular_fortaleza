@@ -28,6 +28,9 @@ dev = [
     "invoke>=2.2.0",
     "nbclient>=0.10.0",
     "nbformat>=5.10.0",
+    # Usado pelo hook de pre-commit e pela conferencia do CI
+    # (uv run nbstripout --verify notebooks/*.ipynb).
+    "nbstripout>=0.8.1",
     "ipykernel>=6.29.0",
 ]
 docs = [

@@ -30,6 +30,13 @@ jobs:
         run: uv run invoke test
 
       - name: Conferir que os notebooks estão sem saída
-        # Mesma regra do hook nbstripout: notebooks/ é versionado limpo; as
-        # versões executadas ficam em reports/notebooks/.
-        run: uv run nbstripout --verify notebooks/*.ipynb
+        # Mesma regra do hook de pre-commit: notebooks/ é versionado limpo e na
+        # forma canônica do nbstripout; as versões executadas, com saída, ficam
+        # em reports/notebooks/ e são as que o site publica.
+        run: |
+          if ! uv run nbstripout --verify notebooks/*.ipynb; then
+            echo "::error::Os notebooks em notebooks/ têm saída ou estão fora da forma canônica."
+            echo "Rode localmente: uv run nbstripout notebooks/*.ipynb"
+            echo "E instale o hook para não repetir: uv run pre-commit install"
+            exit 1
+          fi
