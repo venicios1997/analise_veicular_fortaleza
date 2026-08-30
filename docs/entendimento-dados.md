@@ -33,7 +33,7 @@ análise").
 
 | Requisito | Situação |
 |:---|:---|
-| 1.000 a 5.000 anúncios (meta do Canvas) | **atendida** — 2.565 coletados |
+| 1.000 a 5.000 anúncios (meta do Canvas) | **atendida** — 2.565 coletados, 2.418 após a curadoria |
 | Variáveis de identificação, técnicas e comerciais completas | **atendida** — as 23 colunas cobrem todas as dimensões do Canvas |
 | Preço de venda efetivo (não só anunciado) | **inviável** — a OLX não publica esse dado |
 | Série temporal de anúncios | **inviável** — coleta de um único dia (21/08/2026) |
@@ -54,6 +54,12 @@ foi descoberta na análise, não na leitura:
 Tratada em `02-ajustes-dados.ipynb`, bloco 4 (o registro é removido, não
 corrigido — não há como inferir o valor real).
 
+A sentinela óbvia não era a única inconsistência de `km`: 61 anúncios declaram
+**menos de 1.000 km em veículos com mais de 5 anos** — quilometragem digitada em
+milhares ou campo não preenchido, mas sem nenhum valor isolado que denuncie a
+troca. Só ficou visível ao perfilar os segmentos, e virou a regra 7 da
+[preparação](preparacao.md#regras-de-limpeza).
+
 ### Achados que mudam a análise
 
 1. **62 anúncios com falha total de captura**: as 7 colunas do bloco
@@ -62,10 +68,12 @@ corrigido — não há como inferir o valor real).
    carregar — falha do scraper, não ausência de informação do anúncio. Esses
    registros são removidos (`02-ajustes-dados.ipynb`, bloco 3), não imputados.
 2. **Ausência real e legítima, não estrutural**: todo carro tem marca e
-   câmbio — o que falta é real. `aceita_troca` (24,7%) e `unico_dono` (16,1%)
-   dependem do vendedor informar; viram categoria explícita `NaoInformado` em
-   vez de serem descartadas (um limiar único de 5% de ausência teria
-   jogado fora essas duas variáveis, que o Canvas do Problema pede).
+   câmbio — o que falta é real. `aceita_troca` (**27,4%** na base bruta de
+   2.565 anúncios, **25,7%** no ponto do funil em que a decisão é tomada) e
+   `unico_dono` (**18,7%** e **16,7%**) dependem do vendedor informar; viram
+   categoria explícita `NaoInformado` em vez de serem descartadas (um limiar
+   único de 5% de ausência teria jogado fora essas duas variáveis, que o Canvas
+   do Problema pede).
 3. **`preco` e `valor_fipe_final` correlacionam em 0,98** (Spearman) — a FIPE é,
    por construção, quase um espelho do preço pedido. Por isso fica reservada
    da modelagem, e não descartada por redundância (ambas já são reservadas).
@@ -89,6 +97,11 @@ corrigido — não há como inferir o valor real).
 - **Preço anunciado, não vendido** — afeta a leitura de "oportunidade
   comercial" (desconto vs. FIPE): mede intenção de venda, não transação
   fechada. Impacta o Objetivo 2 dos [critérios de sucesso](criterios-sucesso.md).
+- **FIPE casada por texto em 6,4% dos anúncios** — o *fallback* pela API pública
+  casa marca/modelo/ano por similaridade, e quando erra o modelo o desconto
+  calculado dispara (a base bruta chega a −1.249%). Tratado anulando as leituras
+  fora de ±60% e resumindo o desconto pela mediana, não pela média — ver
+  [Avaliação dos resultados](avaliacao.md#a-revisao-que-mudou-a-conclusao).
 - **Sem série temporal** — os resultados retratam o mercado em 21/08/2026, não
   uma tendência. Não impede nenhum objetivo, mas limita a validade dos números
   no tempo.

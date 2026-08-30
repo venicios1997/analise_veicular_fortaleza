@@ -25,7 +25,7 @@ nav:
   - Status do projeto: status.md
 
 hooks:
-  - mkdocs_hooks/publicar_notebooks.py
+  - mkdocs_hooks/publicar_artefatos.py
 
 plugins:
   - search

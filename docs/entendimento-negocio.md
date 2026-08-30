@@ -34,19 +34,19 @@
 ???+ success "Fase 7: Implementação"
     - [x] Gerar desenho da implementação
     - [x] Desenvolver script da implementação (`src/deployment/app.py`)
-    - [ ] Produzir relatório de monitoramento e manutenção dos modelos
+    - [x] Produzir relatório de monitoramento e manutenção dos modelos
     - [x] Produzir relatório final contendo todas as fases anteriores
 
 ## Avaliar a situação
 
-O projeto é individual, de escopo acadêmico, com recursos e riscos de porte bem
-menor que um projeto corporativo — mesmo assim vale registrar os quatro pontos
-que orientaram as decisões de escopo.
+O projeto é acadêmico, de escopo e riscos bem menores que os de um projeto
+corporativo — mesmo assim vale registrar os quatro pontos que orientaram as
+decisões de escopo.
 
 ### Recursos
 
-- **Humanos:** um único autor, acumulando os papéis de analista de negócio,
-  engenheiro de dados e cientista de dados.
+- **Humanos:** uma equipe de cinco integrantes, acumulando entre si os papéis de
+  analista de negócio, engenheiro de dados e cientista de dados.
 - **Tecnológicos:** Python 3.12, `uv` para gerência de ambiente, Playwright para
   o scraping (repositório separado, não versionado aqui), JupyterLab,
   scikit-learn, MkDocs Material para a documentação e Streamlit para a
@@ -57,9 +57,13 @@ que orientaram as decisões de escopo.
 
 #### Equipe técnica
 
-| Nome     | Cargo / Função                                         | E-mail                 |
-| :------- | :------------------------------------------------------ | :----------------------- |
-| Venicios | Coleta de dados, engenharia de dados, ciência de dados | venicios1997@gmail.com |
+| Nome | Cargo / Função |
+| :--- | :--- |
+| Venicios Andrade | Coleta de dados, engenharia de dados e modelagem |
+| Luis Helder | Revisão metodológica, preparação dos dados e implantação |
+| Marcos Paulo | Análise exploratória e documentação |
+| Josué Vasconcelos | Análise exploratória e documentação |
+| Plínio Rodrigues | Avaliação dos resultados e leitura de negócio |
 
 #### Especialistas de negócio
 
@@ -70,8 +74,9 @@ Fortaleza-CE — usado aqui como o "cliente" hipotético do projeto.
 
 #### Equipe de infraestrutura
 
-Não aplicável — projeto individual, sem infraestrutura compartilhada. Execução
-local (notebook pessoal) e documentação publicada via GitHub Pages/MkDocs.
+Não aplicável — projeto acadêmico, sem infraestrutura compartilhada. Execução
+local (máquina de cada integrante) e documentação publicada em GitHub Pages pelo
+workflow `.github/workflows/docs.yml`.
 
 #### Recursos financeiros
 
@@ -135,10 +140,15 @@ dado, não organizacionais:
 - **Escolha do número de clusters e do espaço de atributos:** decisão sensível,
   documentada e testada empiricamente (seção *Sensibilidade ao espaço de
   atributos* do notebook `03-modelagem`).
+- **Estatística que resume o desconto sobre a FIPE:** `desconto_fipe_pct` é uma
+  razão de cauda pesada, e média e mediana chegaram a apontar oportunidades
+  opostas. Tratado com uma regra de limpeza e com a publicação das duas
+  estatísticas lado a lado — ver
+  [Avaliação dos resultados](avaliacao.md#a-revisao-que-mudou-a-conclusao).
 
 ### Análise custo-benefício
 
-Custo: o tempo do autor (coleta, análise, modelagem, documentação) — sem custo
+Custo: o tempo da equipe (coleta, análise, modelagem, documentação) — sem custo
 financeiro direto. Benefício: um critério de decisão de estoque baseado em
 padrão real de mercado, em vez de intuição, replicável a qualquer momento
 rodando a coleta e o pipeline novamente.

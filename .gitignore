@@ -186,9 +186,10 @@ cython_debug/
 # ruff
 .ruff_cache/
 
-# Cópia dos notebooks executados, gerada no build do MkDocs
-# (o original fica em reports/notebooks/)
+# Artefatos copiados para dentro de docs/ pelo hook do MkDocs.
+# Os originais ficam em reports/notebooks/ e reports/figures/.
 docs/notebooks/
+docs/imagens/figuras/
 
 # Site estático gerado pelo mkdocs build
 site/

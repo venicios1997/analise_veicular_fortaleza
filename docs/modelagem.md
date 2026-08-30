@@ -83,12 +83,10 @@ empiricamente (não presumidas):
 | Numérico enxuto (`ano`, `km`, `zero_km`) | 3 | 0,46 a 0,54 |
 | Misto (+ one-hot das 9 nominais) | 58 | 0,11 a 0,12 |
 
-![Silhueta por k nos dois espaços de atributos](../reports/figures/modelagem/sensibilidade-espaco-atributos.png)
+![Silhueta por k nos dois espaços de atributos](imagens/figuras/modelagem/sensibilidade-espaco-atributos.png)
 
-/// caption
-Sensibilidade ao espaço de atributos. Dados em
-`reports/tables/modelagem/sensibilidade-espaco-atributos.csv`.
-///
+*Silhueta por número de segmentos, nos dois espaços de atributos. Tabela-fonte:
+`reports/tables/modelagem/sensibilidade-espaco-atributos.csv`.*
 
 O espaço misto dilui a silhueta: 55 das 58 dimensões são *dummies* quase
 sempre zero, e a distância euclidiana passa a ser dominada por combinações
@@ -149,12 +147,10 @@ km e idade — é assim que o número do cluster vira persona de negócio.
 | 1 | Seminovos recentes | 1.070 (44,3%) | R$ 97.990 | 44.450 | 2 anos | Fiat | Hatch |
 | 3 | Zero-km e vitrine | 65 (2,7%) | R$ 175.990 | 0 | 0 anos | BYD | SUV |
 
-![Segmentos no plano preço × km](../reports/figures/modelagem/segmentos-preco-x-km.png)
+![Segmentos no plano preço × km](imagens/figuras/modelagem/segmentos-preco-x-km.png)
 
-/// caption
-Os quatro segmentos no plano preço × quilometragem. Dados em
-`reports/tables/modelagem/perfil-dos-segmentos.csv`.
-///
+*Os quatro segmentos no plano preço × quilometragem. Tabela-fonte:
+`reports/tables/modelagem/perfil-dos-segmentos.csv`.*
 
 A nomeação dos grupos é **manual**, feita a partir dessas medianas, não
 automática — mas não é livre: cada nome vem acompanhado de uma condição

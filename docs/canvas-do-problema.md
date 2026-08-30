@@ -49,10 +49,10 @@ decisões de aquisição e composição de estoque.
 
 ### Metas propostas
 
-- [x] Identificar entre **4 e 8 segmentos** de veículos — obtido: **5**
+- [x] Identificar entre **4 e 8 segmentos** de veículos — obtido: **4**
 - [x] Obter segmentos com características claramente diferenciadas
 - [x] Permitir uma interpretação comercial para cada segmento
-- [x] Identificar pelo menos **2 potenciais oportunidades comerciais** — obtido: segmentos 3 e 2 (ver [Avaliação dos resultados](avaliacao.md))
+- [x] Identificar pelo menos **2 potenciais oportunidades comerciais** — obtido: segmentos 0 e 2, os dois com desconto mediano positivo sobre a FIPE (ver [Avaliação dos resultados](avaliacao.md))
 
 ## 5. Meta de mineração
 
@@ -81,13 +81,17 @@ Index.
 
 ### Meta preliminar
 
-- [x] Silhouette Score ≥ **0,40** — obtido: **0,542**
-- [x] Nenhum cluster excessivamente pequeno — menor segmento: 60 anúncios
+- [x] Silhouette Score ≥ **0,40** — obtido: **0,541**
+- [x] Nenhum cluster excessivamente pequeno — menor segmento: 65 anúncios
 - [x] Clusters comercialmente interpretáveis
 - [ ] Estabilidade razoável dos agrupamentos sob reamostragem — avaliada por
   `ShuffleSplit` na seleção do algoritmo, não como estabilidade formal
   (ex.: Índice de Rand Ajustado) do modelo final
-- [x] Ausência de agrupamentos formados apenas por outliers ou ruído
+- [x] Ausência de agrupamentos formados apenas por outliers ou ruído — a
+  primeira modelagem tinha um: 60 anúncios de quilometragem implausível
+  (14 km rodados por ano na mediana). Virou regra de limpeza e o número de
+  segmentos caiu de 5 para 4; ver
+  [Avaliação dos resultados](avaliacao.md#revisao-do-processo)
 
 ## 7. Entidade de análise
 
@@ -116,7 +120,7 @@ data de coleta) — todas coletadas. Detalhamento completo em
 
 ### Volume desejado
 
-> **1.000 a 5.000 anúncios** — obtido: **2.565** anúncios brutos, **2.479**
+> **1.000 a 5.000 anúncios** — obtido: **2.565** anúncios brutos, **2.418**
 > após a limpeza (ver [Preparação dos dados](preparacao.md)).
 
 ### Atenção metodológica
@@ -134,8 +138,9 @@ resultados (ver [Entendimento dos dados — Limitações](entendimento-dados.md#
 > Quais segmentos de veículos podem ser identificados automaticamente a partir
 > das características dos anúncios de Fortaleza?
 
-**Resposta:** 5 segmentos, obtidos por K-Means sobre `ano`/`km`/`zero_km`
-(silhueta 0,542). Ver [Modelagem dos dados](modelagem.md).
+**Resposta:** 4 segmentos, obtidos por K-Means sobre `ano`/`km`/`zero_km`
+(silhueta 0,541): *populares antigos*, *populares usados*, *seminovos recentes*
+e *zero-km e vitrine*. Ver [Modelagem dos dados](modelagem.md).
 
 ### Pergunta 2
 
@@ -151,16 +156,16 @@ diferenciam os segmentos na leitura de negócio). Ver
 
 > Quais segmentos concentram veículos de menor preço e maior quilometragem?
 
-**Resposta:** o segmento 0 (populares antigos: R$ 15,0 mil, 163 mil km, 24 anos
-de idade mediana). Ver [Avaliação dos resultados](avaliacao.md).
+**Resposta:** o segmento 0, *populares antigos* — R$ 14,0 mil, 158 mil km e 25
+anos de idade mediana. Ver [Avaliação dos resultados](avaliacao.md).
 
 ### Pergunta 4
 
 > Quais segmentos apresentam maior concentração de veículos dentro de
 > determinadas faixas de preço?
 
-**Resposta:** os segmentos 2 e 3 concentram juntos 82,6% da base — seminovos
-recentes (R$ 99,5 mil) e populares usados (R$ 41,9 mil). Ver
+**Resposta:** os segmentos 1 e 2 concentram juntos 86,8% da base — seminovos
+recentes (R$ 98,0 mil) e populares usados (R$ 39,9 mil). Ver
 `reports/tables/modelagem/perfil-dos-segmentos.csv`.
 
 ### Pergunta 5
@@ -168,12 +173,17 @@ recentes (R$ 99,5 mil) e populares usados (R$ 41,9 mil). Ver
 > Quais segmentos representam potenciais oportunidades para uma pequena
 > revenda de veículos em Fortaleza?
 
-**Resposta:** o segmento 3 (populares usados) tem desconto médio de **+3,0%**
-sobre a FIPE — a única leitura de desconto positivo entre os 5 segmentos — e
-41,5% da base, a maior participação de mercado. Ver
-[Avaliação dos resultados](avaliacao.md) e a aba "Oportunidades comerciais" da
-aplicação, que também detalha o desconto médio por marca e carroceria dentro
-de cada segmento.
+**Resposta:** dois dos quatro segmentos estão, no anúncio típico, abaixo da
+tabela FIPE — o segmento 0 (*populares antigos*, desconto mediano **+7,7%**) e o
+segmento 2 (*populares usados*, **+0,7%**, com 42,5% da base e a maior liquidez
+entre os dois). Ver [Avaliação dos resultados](avaliacao.md) e a página
+"Oportunidades comerciais" da aplicação, que também detalha o desconto por marca
+e carroceria dentro de cada segmento.
+
+A leitura usa a **mediana**, não a média: `desconto_fipe_pct` é uma razão de
+cauda pesada, e a média chegava a inverter o ranking inteiro antes da regra de
+desconto fora de faixa (ver
+[Avaliação dos resultados](avaliacao.md#a-revisao-que-mudou-a-conclusao)).
 
 ## 10. Restrições e riscos
 
@@ -194,7 +204,12 @@ alta correlação entre variáveis, codificação inadequada de categóricas,
 concentração excessiva de marcas/modelos. **Tratado** em
 [Modelagem dos dados](modelagem.md) — a seção "Sensibilidade ao espaço de
 atributos" é a resposta direta ao risco de codificação inadequada de
-categóricas (o one-hot ingênuo derrubava a silhueta em ~5×).
+categóricas (o one-hot ingênuo derrubava a silhueta em ~5×). O risco de
+"influência excessiva de outliers" se materializou de fato, em dois pontos, e
+os dois estão registrados em
+[Preparação dos dados](preparacao.md#regras-de-limpeza): quilometragem
+implausível formando um cluster inteiro, e a cauda de `desconto_fipe_pct`
+dominando a média de cada segmento.
 
 ### Riscos relacionados ao negócio
 
@@ -250,7 +265,9 @@ dimensão).
 
 ## Título e hipótese
 
-## Segmentação do Mercado de Veículos Usados de Fortaleza por meio de Aprendizado de Máquina Não Supervisionado para Apoio à Decisão de Composição de Estoque
+> **Segmentação do Mercado de Veículos Usados de Fortaleza por meio de
+> Aprendizado de Máquina Não Supervisionado para Apoio à Decisão de Composição
+> de Estoque**
 
 > **Pergunta central:** Quais segmentos de veículos usados apresentam
 > características semelhantes no mercado de Fortaleza e como essa segmentação

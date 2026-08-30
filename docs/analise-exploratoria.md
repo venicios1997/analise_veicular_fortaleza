@@ -57,6 +57,28 @@ base não declara nenhuma escala do tipo `Ex > Gd > TA`) e características de
   de remover ou não — e com qual fator — é tomada com evidência de negócio em
   `02-ajustes-dados.ipynb`.
 
+![Valores ausentes por coluna](imagens/figuras/eda-exploratoria/valores-ausentes.png)
+
+*Ausência por coluna, antes de qualquer ajuste. Tabela-fonte:
+`reports/tables/eda-exploratoria/valores-ausentes.csv`.*
+
+![Valores discrepantes](imagens/figuras/eda-exploratoria/valores-discrepantes.png)
+
+*Discrepantes pelo critério de Tukey (1,5×IQR) — aqui só detectados; a decisão
+de remover é tomada na preparação. Tabela-fonte:
+`reports/tables/eda-exploratoria/valores-discrepantes.csv`.*
+
+![Correlação entre as variáveis](imagens/figuras/eda-exploratoria/correlacao.png)
+
+*Spearman entre numéricas, V de Cramér entre nominais e η entre nominal e
+numérica. Tabela-fonte: `reports/tables/eda-exploratoria/correlacao.csv`.*
+
+![Distribuição de preço](imagens/figuras/eda-exploratoria/univariada-discreta-preco.png)
+
+*Distribuição de `preco` — cauda longa à direita, o que sustenta o uso de
+mediana em vez de média na leitura por segmento. Tabela-fonte:
+`reports/tables/eda-exploratoria/univariada-discreta-preco.csv`.*
+
 ## Coleção de insights
 
 Os seis achados que a EDA deixou, com o número que sustenta cada um — é esta
@@ -82,8 +104,9 @@ em `reports/tables/eda-exploratoria/insights.csv`.
    particulares vendem com desconto médio positivo (+1,9%) — menor km e
    melhor preço vs. FIPE não andam juntos no mesmo canal de venda.
 6. **`aceita_troca` (27,4%) e `unico_dono` (18,7%) são as colunas com mais
-   ausência** — esperado, dependem do anunciante informar. A mescla com a
-   API pública reduz a ausência de FIPE de 9,3% para 2,9%.
+   ausência** — percentuais medidos na base bruta de 2.565 anúncios; esperado,
+   dependem do anunciante informar. A mescla com a API pública reduz a ausência
+   de FIPE de 9,3% para 2,9%.
 
 ## Reprodução
 
@@ -92,8 +115,11 @@ em `reports/tables/eda-exploratoria/insights.csv`.
 uv run invoke notebooks
 ```
 
-Os notebooks são versionados **com saída** neste repositório (diferente da
-convenção `nbstripout`) — cada figura relevante também é persistida em
+Os notebooks em `notebooks/` são versionados **sem saída** — o `nbstripout` roda
+no pre-commit, para evitar diffs gigantes. As versões executadas ficam em
+`reports/notebooks/` e são as publicadas na seção **Notebooks** deste site.
+
+Independente disso, cada figura relevante é persistida em
 `reports/figures/eda-exploratoria/` e a tabela que a originou em
 `reports/tables/eda-exploratoria/`, gravadas juntas por
 `src.utils.io.salvar_figura`, para que o dado nunca divirja do gráfico.
