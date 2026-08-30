@@ -80,10 +80,17 @@ empiricamente (não presumidas):
 
 | Espaço | Dimensões | Silhueta (k=4-8) |
 |:---|---:|:---|
-| Numérico enxuto (`ano`, `km`, `zero_km`) | 3 | 0,47 a 0,54 |
-| Misto (+ one-hot das 9 nominais) | 106 | 0,10 a 0,14 |
+| Numérico enxuto (`ano`, `km`, `zero_km`) | 3 | 0,46 a 0,54 |
+| Misto (+ one-hot das 9 nominais) | 58 | 0,11 a 0,12 |
 
-O espaço misto dilui a silhueta: 103 das 106 dimensões são *dummies* quase
+![Silhueta por k nos dois espaços de atributos](../reports/figures/modelagem/sensibilidade-espaco-atributos.png)
+
+/// caption
+Sensibilidade ao espaço de atributos. Dados em
+`reports/tables/modelagem/sensibilidade-espaco-atributos.csv`.
+///
+
+O espaço misto dilui a silhueta: 55 das 58 dimensões são *dummies* quase
 sempre zero, e a distância euclidiana passa a ser dominada por combinações
 categóricas, não pelo perfil de uso do veículo. **Decisão: a modelagem usa o
 espaço numérico enxuto** — as nominais continuam decisivas, mas na leitura
@@ -114,18 +121,64 @@ escolher, não para o modelo entregue).
     (acima) faz parte do desenho do experimento, e não é um detalhe de
     implementação: métrica boa em espaço errado não vira modelo bom.
 
-**Resultado:** K-Means venceu (`n_clusters=5`, `init=k-means++`) contra os
-outros três candidatos. Silhueta **0,542**, Davies-Bouldin **0,543**,
-Calinski-Harabasz **6.670**.
+**Resultado:** K-Means venceu (`n_clusters=4`, `init=random`) contra os
+outros três candidatos. Silhueta **0,541**, Davies-Bouldin **0,496**,
+Calinski-Harabasz **7.707**.
+
+| Algoritmo | Silhueta média (5 reamostragens) | Desvio |
+|:---|--:|--:|
+| **k-means** | **0,5414** | 0,0121 |
+| mini-batch k-means | 0,5410 | 0,0176 |
+| bisecting k-means | 0,5340 | 0,0146 |
+| birch | 0,1111 | 1,0143 |
+
+A margem sobre o mini-batch é menor que o desvio da reamostragem: os dois são
+empiricamente equivalentes, e a escolha do K-Means se dá por ser o mais simples
+de explicar e o mais barato de reproduzir, não por superioridade estatística.
 
 ## Interpretação do resultado
 
 Cada segmento é perfilado por mediana/moda das variáveis que **não** entraram
 na clusterização (marca, carroceria, câmbio, tipo de vendedor) mais preço,
-km e idade — é assim que o número do cluster vira persona de negócio. A
-nomeação dos grupos ("populares antigos", "seminovos recentes"...) é manual,
-feita a partir dessas medianas, não automática. Detalhe completo em
+km e idade — é assim que o número do cluster vira persona de negócio.
+
+| Segmento | Nome | Anúncios | Preço mediano | Km mediana | Idade | Marca | Carroceria |
+|:-:|:---|--:|--:|--:|--:|:---|:---|
+| 0 | Populares antigos | 255 (10,5%) | R$ 14.000 | 158.000 | 25 anos | Volkswagen | Hatch |
+| 2 | Populares usados | 1.028 (42,5%) | R$ 39.900 | 120.000 | 12 anos | Chevrolet | Hatch |
+| 1 | Seminovos recentes | 1.070 (44,3%) | R$ 97.990 | 44.450 | 2 anos | Fiat | Hatch |
+| 3 | Zero-km e vitrine | 65 (2,7%) | R$ 175.990 | 0 | 0 anos | BYD | SUV |
+
+![Segmentos no plano preço × km](../reports/figures/modelagem/segmentos-preco-x-km.png)
+
+/// caption
+Os quatro segmentos no plano preço × quilometragem. Dados em
+`reports/tables/modelagem/perfil-dos-segmentos.csv`.
+///
+
+A nomeação dos grupos é **manual**, feita a partir dessas medianas, não
+automática — mas não é livre: cada nome vem acompanhado de uma condição
+verificável no notebook `03-modelagem` (por exemplo, *Populares antigos* exige
+idade mediana ≥ 18 anos e km mediana ≥ 120.000). Se uma coleta futura mudar o
+mercado, a execução falha ali em vez de publicar um catálogo cujo rótulo não
+descreve mais o grupo. Detalhe completo em
 [Avaliação dos resultados](avaliacao.md).
+
+### Duas leituras do desconto sobre a FIPE
+
+`desconto_fipe_pct` é uma razão, e razão tem cauda — por isso o perfil publica
+**mediana e média lado a lado**, e o ranking de oportunidade usa a mediana:
+
+* a **mediana** responde *"o anúncio típico deste segmento está acima ou abaixo
+  da tabela?"* — é a leitura para decidir uma compra;
+* a **média** responde *"e se eu comprasse a carteira inteira?"* — é sensível às
+  pontas, e a distância entre as duas mede o quanto a leitura do segmento depende
+  de poucos anúncios.
+
+Depois da regra de desconto fora de faixa (ver
+[Preparação dos dados](preparacao.md#regras-de-limpeza)), os dois rankings
+**coincidem** — o que não acontecia antes dela, e é a evidência de que a leitura
+comercial parou de depender de um punhado de anúncios mal casados com a FIPE.
 
 ## Saídas
 
@@ -135,3 +188,4 @@ feita a partir dessas medianas, não automática. Detalhe completo em
 | `models/modelo-segmentacao.joblib` | pipeline treinado (pré-processador + `GridSearchCV`), pronto para `.predict()` |
 | `models/catalogo_de_segmentos.json` | métricas do modelo + perfil de cada segmento |
 | `reports/figures/modelagem/*.png` | sensibilidade ao espaço de atributos, mapa preço × km |
+| `reports/tables/modelagem/oportunidades-comerciais.csv` | ranking por desconto mediano, com a média e a divergência ao lado |

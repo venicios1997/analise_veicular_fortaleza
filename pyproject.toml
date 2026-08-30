@@ -36,7 +36,6 @@ docs = [
     "mkdocs-material>=9.5.44",
     "mkdocs-jupyter>=0.25.0",
     "mkdocs-glightbox>=0.4.0",
-    "mkdocs-awesome-pages-plugin>=2.9.2",
     "mkdocs-print-site-plugin>=2.5.0",
     "pymdown-extensions>=10.8.1",
 ]

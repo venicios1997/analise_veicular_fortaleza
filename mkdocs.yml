@@ -17,7 +17,15 @@ nav:
   - Modelagem dos dados: modelagem.md
   - Avaliação dos resultados: avaliacao.md
   - Implementação: implementacao.md
+  - Notebooks:
+      - Dicionário de dados: notebooks/00-dicionario-dados.ipynb
+      - Análise exploratória: notebooks/01-analise-exploratoria.ipynb
+      - Ajustes nos dados: notebooks/02-ajustes-dados.ipynb
+      - Modelagem e implantação: notebooks/03-modelagem.ipynb
   - Status do projeto: status.md
+
+hooks:
+  - mkdocs_hooks/publicar_notebooks.py
 
 plugins:
   - search
@@ -32,7 +40,6 @@ plugins:
       height: auto
       zoomable: true
       draggable: true
-  - awesome-pages
   - print-site:
       add_to_navigation: false
       add_full_urls: false

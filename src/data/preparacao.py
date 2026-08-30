@@ -57,6 +57,25 @@ COLUNAS_PROTEGIDAS = set(
 #: bloco 4.
 KM_SENTINELA = 999_998
 
+#: Quilometragem abaixo da qual o hodômetro não é crível num carro já rodado.
+#: Combinado com :data:`IDADE_MINIMA_PARA_KM`: um carro com mais de 5 anos e
+#: menos de 1.000 km declarados é, quase sempre, quilometragem digitada em
+#: milhares ("120" para 120.000 km) ou campo não preenchido. Ver notebook
+#: `02-ajustes-dados`, bloco 5.
+KM_MINIMA_PLAUSIVEL = 1_000
+
+#: Idade a partir da qual a regra acima passa a valer. Abaixo dela, km baixa é
+#: legítima (seminovo de vitrine, zero-km) e precisa continuar na base — é o
+#: que a variável `zero_km` marca.
+IDADE_MINIMA_PARA_KM = 5
+
+#: Desconto/ágio máximo (em módulo, %) aceito como leitura de mercado.
+#: `desconto_fipe_pct` é uma razão sem limite inferior: quando o casamento de
+#: FIPE por similaridade de texto erra o modelo, o valor explode (a base chega
+#: a −1.249%). Acima deste limiar o número diz mais sobre o casamento do que
+#: sobre o anúncio.
+DESCONTO_MAXIMO_PLAUSIVEL = 60.0
+
 # --------------------------------------------------------------------------- #
 # Regras de limpeza — narradas no notebook 02-ajustes-dados
 # --------------------------------------------------------------------------- #
@@ -111,6 +130,37 @@ REGRAS_LIMPEZA: list[dict[str, str]] = [
             "quilometragem por ano mede intensidade de uso, informação que `km` e "
             "`ano` sozinhos não capturam. `desconto_fipe_pct` deriva das reservadas "
             "e só entra na avaliação a posteriori."
+        ),
+    },
+    {
+        "regra": (
+            f"Remover anúncios com `km` < {KM_MINIMA_PLAUSIVEL:,} em veículos com mais de "
+            f"{IDADE_MINIMA_PARA_KM} anos"
+        ).replace(",", "."),
+        "motivo": (
+            "Hodômetro implausível: 34 anúncios declaram menos de 1.000 km em carros "
+            "de 6 a 44 anos — inclusive uma Belina 1982 com 100 km e um Civic 2007 "
+            "com 1.000 km anunciado a R$ 10 mil contra FIPE de R$ 43 mil. O padrão "
+            "é quilometragem digitada em milhares ou campo não preenchido, não uma "
+            "frota preservada: a mediana do grupo dá 14 km rodados por ano. Sem a "
+            "regra, esses registros formam um segmento inteiro na clusterização — "
+            "um artefato de captura promovido a leitura de mercado. Zero-km e "
+            "seminovos ficam, protegidos pelo corte de idade."
+        ),
+    },
+    {
+        "regra": (
+            f"Anular `desconto_fipe_pct` quando |desconto| > {DESCONTO_MAXIMO_PLAUSIVEL:.0f}%"
+        ),
+        "motivo": (
+            "A coluna é uma razão sem limite inferior e a FIPE que a alimenta vem, "
+            "em 6,4% dos anúncios, de casamento por similaridade de texto — quando "
+            "o casamento erra o modelo, o desconto explode (mínimo observado: "
+            "−1.249%). São 2,7% da base e eles sozinhos dominam qualquer média. "
+            "Aqui só o **valor** é descartado, não o anúncio: `desconto_fipe_pct` é "
+            "reservada, não entra no espaço de atributos, e remover a linha "
+            "tiraria da segmentação um veículo cujo defeito está na referência de "
+            "preço, não nas características que agrupam."
         ),
     },
     {
@@ -181,6 +231,30 @@ def _derivar(dados: pd.DataFrame) -> pd.DataFrame:
     return dados
 
 
+def _remover_km_implausivel(dados: pd.DataFrame) -> pd.DataFrame:
+    """Remove veículos rodados com hodômetro incompatível com a idade.
+
+    Roda depois de :func:`_derivar`, que é quem constrói ``idade_veiculo``.
+    Ver a regra correspondente em :data:`REGRAS_LIMPEZA`.
+    """
+    implausivel = (dados["km"] < KM_MINIMA_PLAUSIVEL) & (
+        dados["idade_veiculo"] > IDADE_MINIMA_PARA_KM
+    )
+    return dados[~implausivel]
+
+
+def _aparar_desconto_implausivel(dados: pd.DataFrame) -> pd.DataFrame:
+    """Anula `desconto_fipe_pct` fora da faixa plausível, mantendo o anúncio.
+
+    O anúncio continua na base e na segmentação; o que sai é só a leitura de
+    desconto, que naquele ponto reflete um erro de casamento de FIPE.
+    """
+    dados = dados.copy()
+    fora_da_faixa = dados["desconto_fipe_pct"].abs() > DESCONTO_MAXIMO_PLAUSIVEL
+    dados.loc[fora_da_faixa, "desconto_fipe_pct"] = np.nan
+    return dados
+
+
 def _remover_extremos(dados: pd.DataFrame) -> pd.DataFrame:
     """Remove valores além de :data:`FATOR_EXTREMO`×IQR em `ano`/`km`."""
     fora_da_cerca = pd.Series(False, index=dados.index)
@@ -229,6 +303,8 @@ def construir_base_curada(salvar: bool = True) -> pd.DataFrame:
     curada = _remover_km_sentinela(curada)
     curada = _rotular_ausencia_opcional(curada)
     curada = _derivar(curada)
+    curada = _remover_km_implausivel(curada)
+    curada = _aparar_desconto_implausivel(curada)
     curada = _remover_extremos(curada)
     curada = _remover_colunas_sem_informacao(curada)
 

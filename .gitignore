@@ -185,3 +185,10 @@ cython_debug/
 
 # ruff
 .ruff_cache/
+
+# Cópia dos notebooks executados, gerada no build do MkDocs
+# (o original fica em reports/notebooks/)
+docs/notebooks/
+
+# Site estático gerado pelo mkdocs build
+site/

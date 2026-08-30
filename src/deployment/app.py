@@ -5,10 +5,12 @@ de segmentos em `models/catalogo_de_segmentos.json` e a base classificada em
 `data/processed/anuncios_segmentados.parquet` (todos gravados pelo notebook
 `03-modelagem`). Não retreina nada — só classifica e explora o resultado.
 
-Cinco abas: Sobre o projeto, Classificar anúncio (com comparação de margem
-contra um preço de compra opcional), Catálogo de segmentos (filtrável, com
-exportação em CSV), Oportunidades comerciais (com detalhamento por marca e
-carroceria) e Mapa preço x km (também filtrável).
+Cinco páginas, na navegação da barra lateral: Sobre o projeto, Classificar
+anúncio (com comparação de margem contra um preço de compra opcional),
+Catálogo de segmentos (filtrável, com exportação em CSV), Oportunidades
+comerciais (com detalhamento por marca e carroceria) e Mapa preço x km
+(também filtrável). O ranking de oportunidade usa o desconto **mediano**
+sobre a FIPE, com a média exibida ao lado.
 
 Execute com `uv run invoke app` ou `uv run streamlit run src/deployment/app.py`.
 """
@@ -47,8 +49,32 @@ def carregar_base_segmentada() -> pd.DataFrame:
     return pd.read_parquet(config.BASE_SEGMENTADA)
 
 
+def nome_do_segmento(perfil: dict, segmento) -> str:
+    """Nome de negócio do segmento, com o número como reserva.
+
+    O catálogo publicado pelo notebook 03 traz `nome` e `descricao`; o
+    ``fallback`` mantém a aplicação funcionando com um catálogo antigo.
+    """
+    return perfil.get("nome") or f"Segmento {segmento}"
+
+
+def rotulo_do_segmento(perfil: dict, segmento) -> str:
+    """Nome com o número ao lado — para legenda de gráfico e tabela."""
+    nome = perfil.get("nome")
+    return f"{segmento} · {nome}" if nome else f"Segmento {segmento}"
+
+
+def indice_de_nomes(catalogo: dict) -> dict[int, str]:
+    """Mapa `segmento -> rótulo`, usado nas legendas dos gráficos."""
+    return {
+        int(seg): rotulo_do_segmento(perfil, seg) for seg, perfil in catalogo["segmentos"].items()
+    }
+
+
 def cartao_segmento(segmento: str, perfil: dict) -> None:
-    st.metric("Segmento", segmento)
+    st.subheader(nome_do_segmento(perfil, segmento))
+    if perfil.get("descricao"):
+        st.caption(perfil["descricao"])
     col1, col2, col3 = st.columns(3)
     col1.metric("Preço mediano", f"R$ {perfil['preco_mediano']:,.0f}".replace(",", "."))
     col2.metric("Km mediana", f"{perfil['km_mediano']:,.0f} km".replace(",", "."))
@@ -58,9 +84,22 @@ def cartao_segmento(segmento: str, perfil: dict) -> None:
     col4.metric("Marca mais comum", perfil["marca_mais_comum"])
     col5.metric("Carroceria mais comum", perfil["carroceria_mais_comum"])
 
-    desconto = perfil["desconto_fipe_medio_pct"]
-    rotulo_desconto = "Desconto médio vs. FIPE" if desconto >= 0 else "Ágio médio vs. FIPE"
-    st.metric(rotulo_desconto, f"{abs(desconto):.1f}%")
+    mediana = perfil.get("desconto_fipe_mediano_pct", perfil["desconto_fipe_medio_pct"])
+    media = perfil["desconto_fipe_medio_pct"]
+
+    col6, col7 = st.columns(2)
+    rotulo = "Desconto mediano vs. FIPE" if mediana >= 0 else "Ágio mediano vs. FIPE"
+    col6.metric(rotulo, f"{abs(mediana):.1f}%")
+    col7.metric("Desconto médio vs. FIPE", f"{media:+.1f}%")
+
+    if (mediana >= 0) != (media >= 0):
+        st.caption(
+            "Média e mediana discordam no sinal: o anúncio típico deste segmento vai "
+            "para um lado da tabela FIPE e a carteira inteira, para o outro — a média "
+            "está sendo puxada por uma minoria de anúncios. Para decidir uma compra, "
+            "vale a mediana."
+        )
+
     resumo = f"{perfil['anuncios']:,} anúncios · {perfil['participacao_pct']:.1f}% da base"
     st.caption(resumo.replace(",", "."))
 
@@ -121,7 +160,7 @@ def pagina_sobre(catalogo: dict, base: pd.DataFrame) -> None:
     )
 
     st.divider()
-    st.subheader("O que cada aba responde")
+    st.subheader("O que cada página responde")
     st.markdown(
         "- **Classificar anúncio** — a que perfil de mercado pertence um carro "
         "com este ano/km específico?\n"
@@ -161,9 +200,23 @@ def pagina_classificar(modelo, catalogo: dict, base: pd.DataFrame) -> None:
         help="Se preenchido, compara com o preço mediano de venda do segmento.",
     )
 
+    # O resultado fica em `session_state`, não preso ao valor do botão: qualquer
+    # interação em outro widget reexecuta o script e o botão volta a False —
+    # sem isto, a classificação some da tela sem aviso.
     if st.button("Classificar", type="primary"):
         entrada = pd.DataFrame({"ano": [ano], "km": [km], "zero_km": [int(km == 0)]})
-        segmento = int(modelo.predict(entrada)[0])
+        st.session_state["classificacao"] = {
+            "segmento": int(modelo.predict(entrada)[0]),
+            "ano": ano,
+            "km": km,
+            "preco_compra": preco_compra,
+        }
+
+    resultado = st.session_state.get("classificacao")
+    if resultado:
+        segmento = resultado["segmento"]
+        km = resultado["km"]
+        preco_compra = resultado["preco_compra"]
         perfil = catalogo["segmentos"][str(segmento)]
 
         st.divider()
@@ -203,8 +256,15 @@ def pagina_classificar(modelo, catalogo: dict, base: pd.DataFrame) -> None:
             )
 
         st.subheader("Onde o anúncio cai na distribuição do segmento")
-        st.caption("A linha tracejada marca a quilometragem informada.")
-        st.pyplot(grafico_distribuicao_segmento(base, segmento, referencia={"km": km}))
+        referencia = {"km": km}
+        if preco_compra > 0:
+            referencia["preco"] = preco_compra
+            st.caption(
+                "As linhas tracejadas marcam a quilometragem e o preço de compra informados."
+            )
+        else:
+            st.caption("A linha tracejada marca a quilometragem informada.")
+        st.pyplot(grafico_distribuicao_segmento(base, segmento, referencia=referencia))
 
         st.subheader("Anúncios parecidos no mesmo segmento")
         parecidos = (
@@ -242,22 +302,52 @@ def botao_download_anuncios(df: pd.DataFrame, nome_arquivo: str, label: str) -> 
     st.download_button(label, data=csv, file_name=nome_arquivo, mime="text/csv")
 
 
+#: Coluna de desconto que ordena o catálogo e o ranking de oportunidades. É a
+#: mediana, não a média: `desconto_fipe_pct` é uma razão de cauda pesada, e a
+#: média inverte o ranking (ver notebook `03-modelagem`, "Por que o desconto sai
+#: em duas colunas"). A média fica visível ao lado, nunca no lugar.
+COLUNA_DESCONTO = "desconto_fipe_mediano_pct"
+
+
 def tabela_catalogo(catalogo: dict) -> pd.DataFrame:
     linhas = [{"segmento": seg, **perfil} for seg, perfil in catalogo["segmentos"].items()]
-    tabela = pd.DataFrame(linhas).sort_values("desconto_fipe_medio_pct", ascending=False)
+    tabela = pd.DataFrame(linhas)
+    tabela["nome"] = [
+        nome_do_segmento(perfil, seg) for seg, perfil in catalogo["segmentos"].items()
+    ]
+    ordenar_por = COLUNA_DESCONTO if COLUNA_DESCONTO in tabela else "desconto_fipe_medio_pct"
+    tabela = tabela.sort_values(ordenar_por, ascending=False)
     return tabela.rename(
         columns={
             "segmento": "Segmento",
+            "nome": "Perfil",
             "anuncios": "Anúncios",
             "participacao_pct": "% da base",
             "preco_mediano": "Preço mediano",
             "km_mediano": "Km mediana",
             "idade_mediana": "Idade mediana",
-            "desconto_fipe_medio_pct": "Desconto vs. FIPE (%)",
+            "desconto_fipe_mediano_pct": "Desconto mediano vs. FIPE (%)",
+            "desconto_fipe_medio_pct": "Desconto médio vs. FIPE (%)",
             "marca_mais_comum": "Marca mais comum",
             "carroceria_mais_comum": "Carroceria mais comum",
         }
     )
+
+
+#: Ordem das colunas nas tabelas de catálogo e de oportunidades.
+COLUNAS_TABELA_SEGMENTOS = [
+    "Segmento",
+    "Perfil",
+    "Anúncios",
+    "% da base",
+    "Preço mediano",
+    "Km mediana",
+    "Idade mediana",
+    "Desconto mediano vs. FIPE (%)",
+    "Desconto médio vs. FIPE (%)",
+    "Marca mais comum",
+    "Carroceria mais comum",
+]
 
 
 def pagina_catalogo(catalogo: dict, base: pd.DataFrame, base_filtrada: pd.DataFrame) -> None:
@@ -269,7 +359,16 @@ def pagina_catalogo(catalogo: dict, base: pd.DataFrame, base_filtrada: pd.DataFr
     )
 
     tabela = tabela_catalogo(catalogo)
-    st.dataframe(tabela, hide_index=True, width="stretch")
+    st.dataframe(
+        tabela[[c for c in COLUNAS_TABELA_SEGMENTOS if c in tabela.columns]],
+        hide_index=True,
+        width="stretch",
+    )
+    st.caption(
+        "Ordenado pelo desconto mediano sobre a FIPE. A coluna de média fica ao lado "
+        "de propósito: onde as duas divergem, a leitura do segmento depende de poucos "
+        "anúncios."
+    )
 
     st.divider()
     st.subheader("Quantos anúncios filtrados caem em cada segmento?")
@@ -297,9 +396,10 @@ def pagina_catalogo(catalogo: dict, base: pd.DataFrame, base_filtrada: pd.DataFr
 
     st.divider()
     st.subheader("Explorar a distribuição de um segmento")
+    nomes = indice_de_nomes(catalogo)
     segmentos_disponiveis = sorted(base["segmento"].unique())
     escolhido = st.selectbox(
-        "Segmento", segmentos_disponiveis, format_func=lambda s: f"Segmento {s}"
+        "Segmento", segmentos_disponiveis, format_func=lambda s: nomes.get(int(s), f"Segmento {s}")
     )
     st.pyplot(grafico_distribuicao_segmento(base, escolhido))
 
@@ -310,48 +410,50 @@ MIN_ANUNCIOS_GRUPO = 5
 def pagina_oportunidades(catalogo: dict, base: pd.DataFrame) -> None:
     st.header("Oportunidades comerciais")
     st.write(
-        "Segmentos ordenados pelo **desconto médio sobre a FIPE** — quanto maior, "
-        "mais a oferta está, em média, abaixo do valor de referência de mercado "
-        "(potencial de compra vantajosa para revenda)."
+        "Segmentos ordenados pelo **desconto mediano sobre a FIPE** — quanto maior, "
+        "mais o anúncio típico do segmento está abaixo do valor de referência de "
+        "mercado (potencial de compra vantajosa para revenda)."
     )
 
     tabela = tabela_catalogo(catalogo)
     melhor = tabela.iloc[0]
     st.success(
-        f"**Melhor oportunidade:** segmento {melhor['Segmento']} — "
-        f"desconto médio de {melhor['Desconto vs. FIPE (%)']:.1f}% sobre a FIPE, "
-        f"{melhor['Anúncios']} anúncios ({melhor['% da base']:.1f}% da base)."
+        f"**Melhor oportunidade:** {melhor['Perfil']} (segmento {melhor['Segmento']}) — "
+        f"desconto mediano de {melhor['Desconto mediano vs. FIPE (%)']:.1f}% sobre a "
+        f"FIPE, {melhor['Anúncios']} anúncios ({melhor['% da base']:.1f}% da base)."
     )
 
     io.configurar_estilo()
-    fig, ax = plt.subplots(figsize=(9, 4))
+    fig, ax = plt.subplots(figsize=(9, 4.5))
     cores = [
         config.PALETA_SEGMENTOS[int(s) % len(config.PALETA_SEGMENTOS)] for s in tabela["Segmento"]
     ]
-    ax.barh(tabela["Segmento"].astype(str), tabela["Desconto vs. FIPE (%)"], color=cores)
+    ax.barh(tabela["Perfil"], tabela["Desconto mediano vs. FIPE (%)"], color=cores)
     ax.axvline(0, color=config.CINZA, lw=1)
-    ax.set_xlabel("Desconto médio vs. FIPE (%) — negativo é ágio")
-    ax.set_ylabel("Segmento")
+    ax.set_xlabel("Desconto mediano vs. FIPE (%) — negativo é ágio")
+    ax.set_ylabel("")
     ax.invert_yaxis()
+    fig.tight_layout()
     st.pyplot(fig)
 
     st.dataframe(
-        tabela[
-            [
-                "Segmento",
-                "Anúncios",
-                "% da base",
-                "Preço mediano",
-                "Km mediana",
-                "Idade mediana",
-                "Desconto vs. FIPE (%)",
-                "Marca mais comum",
-                "Carroceria mais comum",
-            ]
-        ],
+        tabela[[c for c in COLUNAS_TABELA_SEGMENTOS if c in tabela.columns]],
         hide_index=True,
         width="stretch",
     )
+
+    divergem = tabela[
+        (tabela["Desconto mediano vs. FIPE (%)"] >= 0)
+        != (tabela["Desconto médio vs. FIPE (%)"] >= 0)
+    ]
+    if not divergem.empty:
+        nomes_divergentes = ", ".join(divergem["Perfil"].astype(str))
+        st.info(
+            f"**Média e mediana discordam no sinal em:** {nomes_divergentes}. "
+            "Nesses segmentos a média está sendo carregada por uma minoria de "
+            "anúncios muito descontados (ou muito ágios), e não descreve o anúncio "
+            "que a revenda vai encontrar. O ranking acima usa a mediana por isso."
+        )
 
     st.divider()
     with st.expander("Detalhar por marca e carroceria dentro de um segmento"):
@@ -404,7 +506,7 @@ def pagina_oportunidades(catalogo: dict, base: pd.DataFrame) -> None:
             )
 
 
-def pagina_mapa(base_filtrada: pd.DataFrame) -> None:
+def pagina_mapa(catalogo: dict, base_filtrada: pd.DataFrame) -> None:
     st.header("Mapa preço x quilometragem")
     st.write(
         "Cada ponto é um anúncio; a cor é o segmento atribuído pelo modelo. "
@@ -416,14 +518,18 @@ def pagina_mapa(base_filtrada: pd.DataFrame) -> None:
         return
 
     io.configurar_estilo()
+    nomes = indice_de_nomes(catalogo)
     fig, ax = plt.subplots(figsize=(9, 5))
     ordem = sorted(base_filtrada["segmento"].unique())
+    dados = base_filtrada.assign(
+        perfil=lambda d: d["segmento"].map(lambda s: nomes.get(int(s), f"Segmento {s}"))
+    )
     sns.scatterplot(
-        data=base_filtrada,
+        data=dados,
         x="km",
         y="preco",
-        hue="segmento",
-        hue_order=ordem,
+        hue="perfil",
+        hue_order=[nomes.get(int(s), f"Segmento {s}") for s in ordem],
         palette=[config.PALETA_SEGMENTOS[s % len(config.PALETA_SEGMENTOS)] for s in ordem],
         alpha=0.6,
         s=25,
@@ -431,15 +537,19 @@ def pagina_mapa(base_filtrada: pd.DataFrame) -> None:
     )
     ax.set_xlabel("Quilometragem")
     ax.set_ylabel("Preço (R$)")
-    ax.legend(title="Segmento", bbox_to_anchor=(1.02, 1), loc="upper left")
+    ax.legend(title="Perfil", bbox_to_anchor=(1.02, 1), loc="upper left")
+    fig.tight_layout()
     st.pyplot(fig)
     st.caption(f"{len(base_filtrada):,} anúncios exibidos".replace(",", "."))
 
 
 def filtros_sidebar(base: pd.DataFrame) -> pd.DataFrame:
-    """Filtros globais (marca, carroceria, câmbio, faixa de preço) do mapa e do catálogo."""
+    """Filtros (marca, carroceria, câmbio, faixa de preço) do mapa e do catálogo.
+
+    Só é chamado nas páginas que os usam — nas demais a barra lateral fica
+    apenas com a navegação, em vez de exibir controles inertes.
+    """
     st.sidebar.header("Filtros")
-    st.sidebar.caption("Afetam apenas as abas **Catálogo de segmentos** e **Mapa preço x km**.")
     marcas = st.sidebar.multiselect("Marca", sorted(base["marca"].unique()))
     carrocerias = st.sidebar.multiselect("Carroceria", sorted(base["carroceria"].unique()))
     cambios = st.sidebar.multiselect("Câmbio", sorted(base["cambio"].unique()))
@@ -465,6 +575,16 @@ def filtros_sidebar(base: pd.DataFrame) -> pd.DataFrame:
     return filtrada
 
 
+#: Páginas da aplicação, na ordem em que aparecem na navegação.
+PAGINAS = [
+    "Sobre o projeto",
+    "Classificar anúncio",
+    "Catálogo de segmentos",
+    "Oportunidades comerciais",
+    "Mapa preço x km",
+]
+
+
 def main() -> None:
     st.set_page_config(
         page_title="Segmentação de veículos — Fortaleza",
@@ -487,27 +607,29 @@ def main() -> None:
     modelo = carregar_modelo()
     catalogo = carregar_catalogo()
     base = carregar_base_segmentada()
-    base_filtrada = filtros_sidebar(base)
 
-    aba_sobre, aba_classificar, aba_catalogo, aba_oportunidades, aba_mapa = st.tabs(
-        [
-            "Sobre o projeto",
-            "Classificar anúncio",
-            "Catálogo de segmentos",
-            "Oportunidades comerciais",
-            "Mapa preço x km",
-        ]
+    # Navegação na barra lateral, e não em `st.tabs`: com abas, todas renderizam
+    # a cada execução e os filtros teriam de ficar visíveis mesmo nas páginas que
+    # não os usam. Aqui só uma página roda por vez, e os filtros aparecem apenas
+    # onde de fato filtram.
+    st.sidebar.header("Navegação")
+    pagina = st.sidebar.radio(
+        "Página",
+        PAGINAS,
+        label_visibility="collapsed",
     )
-    with aba_sobre:
+    st.sidebar.divider()
+
+    if pagina == "Sobre o projeto":
         pagina_sobre(catalogo, base)
-    with aba_classificar:
+    elif pagina == "Classificar anúncio":
         pagina_classificar(modelo, catalogo, base)
-    with aba_catalogo:
-        pagina_catalogo(catalogo, base, base_filtrada)
-    with aba_oportunidades:
+    elif pagina == "Catálogo de segmentos":
+        pagina_catalogo(catalogo, base, filtros_sidebar(base))
+    elif pagina == "Oportunidades comerciais":
         pagina_oportunidades(catalogo, base)
-    with aba_mapa:
-        pagina_mapa(base_filtrada)
+    else:
+        pagina_mapa(catalogo, filtros_sidebar(base))
 
 
 if __name__ == "__main__":

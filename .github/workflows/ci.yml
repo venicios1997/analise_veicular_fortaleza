@@ -1,0 +1,35 @@
+name: CI
+
+# Verifica o que o checklist do PULL_REQUEST_TEMPLATE.md pede — em vez de
+# pedir que cada autor confira na mão.
+on:
+  push:
+    branches: [main, "features/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  qualidade:
+    name: Lint e testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar o uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Instalar as dependências (usa o uv.lock)
+        run: uv sync --frozen
+
+      - name: Verificar o código com o ruff
+        run: uv run invoke lint
+
+      - name: Executar os testes
+        run: uv run invoke test
+
+      - name: Conferir que os notebooks estão sem saída
+        # Mesma regra do hook nbstripout: notebooks/ é versionado limpo; as
+        # versões executadas ficam em reports/notebooks/.
+        run: uv run nbstripout --verify notebooks/*.ipynb

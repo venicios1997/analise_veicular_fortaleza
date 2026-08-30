@@ -3,10 +3,10 @@
   "destino": "data/processed/anuncios_curados.parquet",
   "linhas_entrada": 2565,
   "colunas_entrada": 25,
-  "linhas_saida": 2479,
+  "linhas_saida": 2418,
   "colunas_saida": 28,
-  "registros_removidos": 86,
-  "pct_registros_removidos": 3.35,
+  "registros_removidos": 147,
+  "pct_registros_removidos": 5.73,
   "fator_extremo": 3.0,
   "colunas_derivadas": [
     "idade_veiculo",
@@ -14,12 +14,13 @@
     "zero_km",
     "desconto_fipe_pct"
   ],
-  "ajustes": 14,
+  "ajustes": 16,
   "ajustes_por_acao": {
-    "removido": 6,
+    "removido": 7,
     "verificado, sem ação": 5,
     "imputado": 2,
-    "corrigido": 1
+    "corrigido": 1,
+    "anulado": 1
   },
   "equivalente_ao_pipeline": true
 }

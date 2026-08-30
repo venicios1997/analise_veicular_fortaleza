@@ -31,7 +31,8 @@ REFERENCES = RAIZ / "references"
 # --------------------------------------------------------------------------- #
 
 # Anúncios de carros usados de Fortaleza-CE, coletados por scraping da OLX
-# (ver `Software/coleta/`). Não há download de origem externa: a camada
+# (o coletor é uma ferramenta separada, fora deste repositório — ver
+# `docs/fonte-dados.md`). Não há download de origem externa: a camada
 # bruta já é o resultado da coleta, materializado uma única vez em
 # `data/raw/` e tratado como imutável a partir daqui.
 ARQUIVO_BRUTO = DATA_RAW / "anuncios_detalhados.csv"
