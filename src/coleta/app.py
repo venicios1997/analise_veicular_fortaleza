@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-
 from matcher import avaliar_anuncios
 from scraper import LocalizacaoNaoEncontrada, buscar_anuncios, enriquecer_com_fipe_olx
 
@@ -21,7 +20,9 @@ with st.form("busca"):
     localizacao = st.text_input("Localização (cidade, bairro ou estado)", value="Fortaleza, CE")
     max_paginas = st.slider(
         "Quantidade de páginas a buscar (50 anúncios por página)",
-        min_value=1, max_value=10, value=3,
+        min_value=1,
+        max_value=10,
+        value=3,
     )
     enviado = st.form_submit_button("Buscar")
 
@@ -82,22 +83,25 @@ if enviado:
         fonte = "OLX" if a.valor_fipe_olx else ("API" if av.valor_fipe else None)
         diferenca_pct = (
             round((valor_principal - a.preco) / valor_principal * 100, 1)
-            if valor_principal else None
+            if valor_principal
+            else None
         )
-        linhas.append({
-            "Anúncio": a.titulo,
-            "Ano": a.ano,
-            "Preço OLX (R$)": a.preco,
-            "Valor FIPE (R$)": valor_principal,
-            "Fonte FIPE": fonte,
-            "Diferença vs FIPE (%)": diferenca_pct,
-            "Valor FIPE OLX (R$)": a.valor_fipe_olx,
-            "Valor FIPE API (R$)": av.valor_fipe,
-            "KM": a.km,
-            "Localização": a.localizacao,
-            "Status FIPE (API)": av.status,
-            "Link": a.link,
-        })
+        linhas.append(
+            {
+                "Anúncio": a.titulo,
+                "Ano": a.ano,
+                "Preço OLX (R$)": a.preco,
+                "Valor FIPE (R$)": valor_principal,
+                "Fonte FIPE": fonte,
+                "Diferença vs FIPE (%)": diferenca_pct,
+                "Valor FIPE OLX (R$)": a.valor_fipe_olx,
+                "Valor FIPE API (R$)": av.valor_fipe,
+                "KM": a.km,
+                "Localização": a.localizacao,
+                "Status FIPE (API)": av.status,
+                "Link": a.link,
+            }
+        )
 
     def fmt_brl(v):
         return f"R$ {v:,.0f}".replace(",", ".") if pd.notna(v) else ""
@@ -129,13 +133,13 @@ if enviado:
             "Valor FIPE (R$)": st.column_config.NumberColumn(
                 format="R$ %.0f",
                 help="Valor usado para o ranking: prioriza a FIPE mostrada pela "
-                     "própria OLX no anúncio; usa a API pública como alternativa "
-                     "quando a OLX não mostra FIPE para aquele anúncio.",
+                "própria OLX no anúncio; usa a API pública como alternativa "
+                "quando a OLX não mostra FIPE para aquele anúncio.",
             ),
             "Diferença vs FIPE (%)": st.column_config.NumberColumn(
                 format="%.1f%%",
                 help="Positivo = anúncio mais barato que a FIPE (bom negócio). "
-                     "Negativo = anúncio mais caro que a FIPE.",
+                "Negativo = anúncio mais caro que a FIPE.",
             ),
             "Valor FIPE OLX (R$)": st.column_config.TextColumn(),
             "Valor FIPE API (R$)": st.column_config.TextColumn(),

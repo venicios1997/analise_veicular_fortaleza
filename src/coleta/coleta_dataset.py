@@ -16,6 +16,7 @@ Uso:
     .venv\\Scripts\\python.exe coleta_dataset.py detalhes
     .venv\\Scripts\\python.exe coleta_dataset.py tudo
 """
+
 from __future__ import annotations
 
 import csv
@@ -46,7 +47,8 @@ FAIXAS_PRECO = [
     (120_000, 160_000),
     (160_000, 250_000),
 ]
-MAX_PAGINAS_POR_FAIXA = 5  # 50 anúncios/página -> até 250 por faixa (reduzido p/ não sobrecarregar o IP)
+# 50 anúncios/página -> até 250 por faixa (reduzido p/ não sobrecarregar o IP)
+MAX_PAGINAS_POR_FAIXA = 5
 
 CAMPOS = [f.name for f in dataclasses.fields(Anuncio)]
 
@@ -91,7 +93,10 @@ def coletar_listagem() -> None:
         novos = [a for a in anuncios if a.link not in links_existentes]
         links_existentes.update(a.link for a in novos)
         _gravar_anuncios(CSV_LISTAGEM, novos)
-        print(f"  {len(anuncios)} anúncios na faixa, {len(novos)} novos (total acumulado: {len(links_existentes)}).")
+        print(
+            f"  {len(anuncios)} anúncios na faixa, {len(novos)} novos "
+            f"(total acumulado: {len(links_existentes)})."
+        )
 
         # pausa entre faixas de preço (cada faixa já abre seu próprio navegador),
         # pra não manter um ritmo constante de requisições por muito tempo seguido
@@ -137,7 +142,8 @@ def detalhar_anuncios() -> None:
 
         enriquecer_com_detalhes(lote, progresso=progresso)
         _gravar_anuncios(CSV_DETALHADO, lote)
-        print(f"\n  {min(i + TAMANHO_LOTE, len(pendentes))}/{len(pendentes)} anúncios detalhados no total.")
+        feitos = min(i + TAMANHO_LOTE, len(pendentes))
+        print(f"\n  {feitos}/{len(pendentes)} anúncios detalhados no total.")
 
         # pausa entre lotes (além da pausa a cada 25 anúncios já feita dentro
         # de enriquecer_com_detalhes), pra espaçar ainda mais as requisições

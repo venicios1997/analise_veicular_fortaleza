@@ -1,13 +1,12 @@
 """Cruza os anúncios da OLX com a Tabela FIPE para achar as melhores oportunidades."""
+
 from __future__ import annotations
 
-import re
 import unicodedata
 from dataclasses import dataclass
 
-from rapidfuzz import fuzz, process
-
 import fipe_api
+from rapidfuzz import fuzz, process
 from scraper import Anuncio
 
 # apelidos comuns que a busca por similaridade de texto erraria sozinha
@@ -50,9 +49,7 @@ def _match_marca(primeira_palavra: str, marcas: list[dict]) -> dict | None:
                 return m
 
     nomes = [m["nome"] for m in marcas]
-    resultado = process.extractOne(
-        primeira_palavra, nomes, scorer=fuzz.WRatio, score_cutoff=70
-    )
+    resultado = process.extractOne(primeira_palavra, nomes, scorer=fuzz.WRatio, score_cutoff=70)
     if not resultado:
         return None
     nome_encontrado, _score, idx = resultado
@@ -69,9 +66,7 @@ def _match_modelo(texto_restante: str, modelos: list[dict]) -> dict | None:
     # anúncio apareça no nome do modelo — evita casar carros diferentes
     # (ex.: "Onix" virar "Joy") só por causa de tokens genéricos em comum.
     nucleo = _normalizar(palavras[0])
-    candidatos = [
-        m for m in modelos if nucleo and nucleo in _normalizar(m["nome"]).split()
-    ]
+    candidatos = [m for m in modelos if nucleo and nucleo in _normalizar(m["nome"]).split()]
     if not candidatos:
         candidatos = modelos
 

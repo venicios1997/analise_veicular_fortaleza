@@ -6,6 +6,7 @@ pula quem já foi resolvido em execuções anteriores. Só chama a API para as
 linhas que ainda faltam, respeitando um delay entre chamadas por causa do
 limite de requisições da API pública da FIPE (parallelum.com.br).
 """
+
 from __future__ import annotations
 
 import csv
@@ -13,9 +14,8 @@ import random
 import time
 from pathlib import Path
 
-import pandas as pd
-
 import matcher
+import pandas as pd
 from scraper import Anuncio
 
 DIR_DADOS = Path(__file__).parent / "dados"

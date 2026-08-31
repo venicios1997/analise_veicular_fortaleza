@@ -1,5 +1,6 @@
 """Scraper de anúncios de carros na OLX usando Playwright (navegador real,
 necessário porque a OLX bloqueia requisições HTTP simples sem navegador)."""
+
 from __future__ import annotations
 
 import asyncio
@@ -10,7 +11,7 @@ import random
 import re
 import sys
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from playwright.sync_api import sync_playwright
 
@@ -75,9 +76,10 @@ def _resolve_location_path(page, texto_local: str) -> dict:
     """Usa a API de autocomplete da própria OLX (chamada de dentro do navegador,
     já autenticado por cookies de sessão) para achar o path de URL da localização."""
     query_js = json.dumps(texto_local)
+    url_js = json.dumps("https://location-autocomplete.olx.com.br/location?q=")
     resultado = page.evaluate(
         f"""
-        fetch('https://location-autocomplete.olx.com.br/location?q=' + encodeURIComponent({query_js}))
+        fetch({url_js} + encodeURIComponent({query_js}))
             .then(r => r.ok ? r.json() : [])
             .catch(() => [])
         """
@@ -177,13 +179,15 @@ def buscar_anuncios(
 
         # precisa estar numa página do domínio olx.com.br antes de chamar a API
         # de autocomplete (mesma origem / cookies de sessão)
-        page.goto(f"{BASE_SEARCH_URL}?ps={preco_min}&pe={preco_max}",
-                   wait_until="domcontentloaded", timeout=60000)
+        page.goto(
+            f"{BASE_SEARCH_URL}?ps={preco_min}&pe={preco_max}",
+            wait_until="domcontentloaded",
+            timeout=60000,
+        )
         page.wait_for_timeout(1500)
 
         local = _resolve_location_path(page, localizacao)
         path = local["path"]
-        titulo_local = local.get("title", localizacao)
 
         for pagina in range(1, max_paginas + 1):
             url = f"{BASE_SEARCH_URL}/{path}?ps={preco_min}&pe={preco_max}&o={pagina}"

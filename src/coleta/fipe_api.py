@@ -1,4 +1,5 @@
 """Cliente para a API pública da Tabela FIPE (parallelum.com.br/fipe)."""
+
 from __future__ import annotations
 
 import re
