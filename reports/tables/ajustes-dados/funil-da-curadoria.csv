@@ -4,4 +4,5 @@
 2;Remover anúncios com falha total do bloco `dataLayer`;2498;62;97,4
 3;Remover o anúncio sem `ano`;2497;1;97,3
 4;Remover o anúncio com `km` = 999.998;2496;1;97,3
-5;Remover valores além de 3xIQR em ano/km;2479;17;96,6
+5;Remover km < 1.000 em veículos com mais de 5 anos;2435;61;94,9
+6;Remover valores além de 3xIQR em ano/km;2418;17;94,3

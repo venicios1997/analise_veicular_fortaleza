@@ -1,0 +1,34 @@
+name: Publicar a documentação
+
+# Publica o site MkDocs em GitHub Pages (branch gh-pages) a cada push na main.
+# O endereço final é o `site_url` declarado em mkdocs.yml.
+#
+# Requisito de uma vez só: em Settings > Pages, apontar a origem para
+# "Deploy from a branch" > gh-pages / (root).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # gh-deploy precisa do histórico para escrever na branch gh-pages
+          fetch-depth: 0
+
+      - name: Instalar o uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Instalar as dependências de documentação
+        run: uv sync --frozen --group docs
+
+      - name: Publicar em gh-pages
+        run: uv run mkdocs gh-deploy --force

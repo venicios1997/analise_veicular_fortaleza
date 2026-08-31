@@ -1,13 +1,13 @@
 {
   "algoritmo": "k-means",
   "parametros": {
-    "init": "k-means++",
-    "n_clusters": "5"
+    "init": "random",
+    "n_clusters": "4"
   },
-  "n_segmentos": 5,
-  "silhueta": 0.5423,
-  "davies_bouldin": 0.5425,
-  "calinski_harabasz": 6669.8,
+  "n_segmentos": 4,
+  "silhueta": 0.5414,
+  "davies_bouldin": 0.4964,
+  "calinski_harabasz": 7706.7,
   "limiar_categoria_rara": 20,
   "espaco_de_atributos": [
     "ano",
@@ -24,53 +24,59 @@
     "zero_km"
   ],
   "segmentos": {
-    "1": {
-      "anuncios": 84,
-      "participacao_pct": 3.4,
-      "preco_mediano": 149990.0,
+    "3": {
+      "nome": "Zero-km e vitrine",
+      "descricao": "Anúncios de veículo novo ou de vitrine, ticket alto e SUV/elétricos. Anunciados acima da FIPE — é o único segmento com ágio, e não é onde uma revenda pequena compra.",
+      "anuncios": 65,
+      "participacao_pct": 2.7,
+      "preco_mediano": 175990.0,
       "km_mediano": 0.0,
       "idade_mediana": 0.0,
-      "desconto_fipe_medio_pct": -5.98,
+      "desconto_fipe_mediano_pct": -9.62,
+      "desconto_fipe_medio_pct": -10.92,
+      "anuncios_com_fipe": 64,
       "marca_mais_comum": "BYD",
+      "carroceria_mais_comum": "SUV"
+    },
+    "1": {
+      "nome": "Seminovos recentes",
+      "descricao": "Até 4 anos, câmbio automático, quilometragem baixa. O maior bloco da oferta e o mais líquido, mas anunciado praticamente na FIPE: pouca margem para comprar bem.",
+      "anuncios": 1070,
+      "participacao_pct": 44.3,
+      "preco_mediano": 97990.0,
+      "km_mediano": 44450.0,
+      "idade_mediana": 2.0,
+      "desconto_fipe_mediano_pct": -0.86,
+      "desconto_fipe_medio_pct": -0.88,
+      "anuncios_com_fipe": 1035,
+      "marca_mais_comum": "Fiat",
       "carroceria_mais_comum": "Hatch"
     },
     "2": {
-      "anuncios": 1020,
-      "participacao_pct": 41.1,
-      "preco_mediano": 99495.0,
-      "km_mediano": 43953.0,
-      "idade_mediana": 2.0,
-      "desconto_fipe_medio_pct": -0.61,
-      "marca_mais_comum": "Fiat",
-      "carroceria_mais_comum": "Hatch"
-    },
-    "3": {
-      "anuncios": 1029,
-      "participacao_pct": 41.5,
-      "preco_mediano": 41900.0,
-      "km_mediano": 117000.0,
+      "nome": "Populares usados",
+      "descricao": "Cerca de 10 anos e 120 mil km, câmbio manual, marcas de volume. O meio do mercado: procura constante e desconto mediano positivo sobre a FIPE.",
+      "anuncios": 1028,
+      "participacao_pct": 42.5,
+      "preco_mediano": 39900.0,
+      "km_mediano": 120000.0,
       "idade_mediana": 12.0,
-      "desconto_fipe_medio_pct": 2.99,
+      "desconto_fipe_mediano_pct": 0.7,
+      "desconto_fipe_medio_pct": 3.19,
+      "anuncios_com_fipe": 1007,
       "marca_mais_comum": "Chevrolet",
       "carroceria_mais_comum": "Hatch"
     },
-    "4": {
-      "anuncios": 60,
-      "participacao_pct": 2.4,
-      "preco_mediano": 24950.0,
-      "km_mediano": 200.0,
-      "idade_mediana": 16.5,
-      "desconto_fipe_medio_pct": -25.36,
-      "marca_mais_comum": "Fiat",
-      "carroceria_mais_comum": "Hatch"
-    },
     "0": {
-      "anuncios": 286,
-      "participacao_pct": 11.5,
-      "preco_mediano": 14994.5,
-      "km_mediano": 163000.0,
-      "idade_mediana": 24.0,
-      "desconto_fipe_medio_pct": -8.25,
+      "nome": "Populares antigos",
+      "descricao": "Carros de 20+ anos, alta quilometragem e preço de entrada. É onde a oferta está mais abaixo da tabela FIPE — giro barato, mas exige avaliação mecânica caso a caso.",
+      "anuncios": 255,
+      "participacao_pct": 10.5,
+      "preco_mediano": 14000.0,
+      "km_mediano": 158000.0,
+      "idade_mediana": 25.0,
+      "desconto_fipe_mediano_pct": 7.74,
+      "desconto_fipe_medio_pct": 8.62,
+      "anuncios_com_fipe": 212,
       "marca_mais_comum": "Volkswagen",
       "carroceria_mais_comum": "Hatch"
     }

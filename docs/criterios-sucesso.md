@@ -27,10 +27,10 @@ derivados do Canvas do Problema da disciplina. Cada um está descrito no formato
 
     **Critérios de aceite:**
 
-    - [x] Entre 4 e 8 segmentos — obtido: **5**
-    - [x] Silhueta ≥ 0,40 — obtido: **0,542**
+    - [x] Entre 4 e 8 segmentos — obtido: **4**
+    - [x] Silhueta ≥ 0,40 — obtido: **0,541**
     - [x] Nenhum segmento com menos de 50 anúncios (volume mínimo para leitura
-      confiável) — obtido: **60** (menor segmento)
+      confiável) — obtido: **65** (menor segmento)
     - [x] A escolha do espaço de atributos é testada, não presumida — a seção
       *Sensibilidade ao espaço de atributos* do notebook `03-modelagem` compara
       o espaço numérico com o espaço misto (one-hot) antes de decidir
@@ -46,17 +46,21 @@ derivados do Canvas do Problema da disciplina. Cada um está descrito no formato
     **Quero** saber o que cada segmento representa — preço típico, quilometragem,
     idade, marca e carroceria mais comuns<br>
     **Para** decidir, para cada grupo, se ele faz sentido para o meu estoque<br>
-    **Objetivo** um perfil de negócio para cada um dos 5 segmentos, incluindo uma
+    **Objetivo** um perfil de negócio para cada um dos 4 segmentos, incluindo uma
     leitura de oportunidade comercial
 
     **Critérios de aceite:**
 
-    - [x] Perfil (preço, km, idade, marca e carroceria dominantes) para os 5
-      segmentos — tabela `reports/tables/modelagem/perfil-dos-segmentos.csv`
-    - [x] Pelo menos 2 oportunidades comerciais identificadas — o segmento 3
-      (populares usados, 41,5% da base) tem desconto médio de **+3,0%** sobre a
-      FIPE; o segmento 2 (seminovos recentes, 41,1%) tem ágio de apenas 0,6% —
-      ambos batem a meta preliminar do Canvas
+    - [x] Perfil (preço, km, idade, marca e carroceria dominantes) para os 4
+      segmentos, cada um com **nome de negócio e condição verificável** —
+      tabela `reports/tables/modelagem/perfil-dos-segmentos.csv`
+    - [x] Pelo menos 2 oportunidades comerciais identificadas — o segmento 0
+      (*populares antigos*, 10,5% da base) tem desconto mediano de **+7,7%**
+      sobre a FIPE e o segmento 2 (*populares usados*, 42,5%) tem **+0,7%**.
+      Os dois estão, no anúncio típico, abaixo da tabela — não é preciso contar
+      um ágio como oportunidade, que era como este critério fechava antes da
+      revisão do desconto (ver
+      [Avaliação dos resultados](avaliacao.md#a-revisao-que-mudou-a-conclusao))
     - [x] Validação externa dos segmentos contra uma variável que **não** entrou
       na modelagem (`bairro`) — seção "Validação externa" do notebook
       `03-modelagem`
@@ -79,8 +83,8 @@ derivados do Canvas do Problema da disciplina. Cada um está descrito no formato
 
     - [x] Aplicação Streamlit que carrega o modelo salvo e classifica um anúncio
       a partir de ano e quilometragem
-    - [x] A aplicação mostra o catálogo dos 5 segmentos e a leitura de
-      oportunidade comercial
+    - [x] A aplicação mostra o catálogo dos 4 segmentos, pelo nome de negócio, e
+      a leitura de oportunidade comercial
     - [x] A aplicação roda localmente sem retreinar nada (`uv run invoke app`)
 
     **Entrega:** `src/deployment/app.py`; `models/modelo-segmentacao.joblib`;
@@ -92,8 +96,8 @@ derivados do Canvas do Problema da disciplina. Cada um está descrito no formato
 
 | Objetivo | Critérios de aceite | Concluídos | Observação |
 |:---|:-:|:-:|:---|
-| 1. Segmentação técnica | 4 | 4 | — |
-| 2. Leitura comercial | 3 | 3 | — |
+| 1. Segmentação técnica | 4 | 4 | k=4 depois da regra de hodômetro implausível |
+| 2. Leitura comercial | 3 | 3 | ranking por desconto mediano, com a média ao lado |
 | 3. Aplicação | 3 | 3 | — |
 | **Total** | **10** | **10** | |
 
@@ -109,7 +113,7 @@ objetivo do projeto, mas restringem a interpretação dos resultados:
 | 2 | Série histórica de anúncios (coleta é de um único dia) | Coletas repetidas ao longo do tempo, fora do escopo deste projeto |
 
 !!! info "Fonte"
-    Critérios derivados do documento `projeto_ml_nao_supervisionado_mercado_carros_fortaleza.md`
-    (Canvas do Problema da disciplina de Aprendizado de Máquina Não Supervisionado,
-    MBA em Ciência de Dados), seções 4 ("Critério de sucesso do negócio") e 6
-    ("Critério de sucesso técnico").
+    Critérios derivados do Canvas do Problema da disciplina de Aprendizado de
+    Máquina Não Supervisionado (MBA em Ciência de Dados), seções 4 ("Critério de
+    sucesso do negócio") e 6 ("Critério de sucesso técnico") — reproduzidas na
+    íntegra em [Canvas do Problema](canvas-do-problema.md).

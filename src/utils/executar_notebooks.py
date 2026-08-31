@@ -23,6 +23,13 @@ from src import config
 ORIGEM = config.RAIZ / "notebooks"
 DESTINO = config.REPORTS / "notebooks"
 
+# O console do Windows abre em cp1252 e quebra nos marcadores abaixo (e em
+# qualquer acento vindo de uma mensagem de erro do notebook). Reconfigurar a
+# saída evita que a execução morra por causa da impressão do progresso.
+for fluxo in (sys.stdout, sys.stderr):
+    if hasattr(fluxo, "reconfigure"):
+        fluxo.reconfigure(encoding="utf-8", errors="replace")
+
 
 def executar_um(caminho: Path) -> tuple[bool, float, str]:
     """Executa um notebook e devolve (sucesso, duração, mensagem)."""

@@ -41,8 +41,10 @@ deste porte:
 | Os notebooks executam do início ao fim sem quebrar | `uv run invoke notebooks` | antes de qualquer entrega | corrigir a célula que falhou |
 | A silhueta do modelo se mantém ≥ 0,40 numa coleta nova | recomparar contra `models/catalogo_de_segmentos.json` | se e quando houver nova coleta | reavaliar o número de segmentos e o espaço de atributos (repetir a seção de sensibilidade) |
 
-Não há alerta automatizado nem plantão — o autor é o único responsável, e o uso
-é sob demanda, não em produção contínua.
+Não há alerta automatizado nem plantão — a manutenção é da equipe, e o uso é sob
+demanda, não em produção contínua. O que roda sozinho é o
+`.github/workflows/ci.yml`: a cada push ele executa `invoke lint`, `invoke test`
+e verifica que os notebooks versionados estão sem saída.
 
 ### Retreinamento
 
@@ -56,8 +58,9 @@ suficiente para alterar qual espaço separa melhor os grupos.
 
 | Artefato | Local |
 |:---|:---|
-| Relatório final (esta documentação) | `docs/` (publicado via MkDocs) |
-| Notebooks completos, com saída | `notebooks/00-dicionario-dados.ipynb` a `03-modelagem.ipynb` |
+| Relatório final (esta documentação) | `docs/` (publicado via MkDocs em GitHub Pages) |
+| Notebooks completos, com saída | `reports/notebooks/00-dicionario-dados.ipynb` a `03-modelagem.ipynb`, publicados na seção **Notebooks** deste site |
+| Notebooks versionados (sem saída, `nbstripout`) | `notebooks/00-dicionario-dados.ipynb` a `03-modelagem.ipynb` |
 | Aplicação | `src/deployment/app.py` |
 
 Não há apresentação de fechamento separada — a documentação em `docs/` cumpre
@@ -71,13 +74,15 @@ esse papel.
   (os 62 anúncios sem nenhum campo estruturado).
 - **O que poderia ter sido melhor** — a decisão de usar one-hot nas nominais
   poderia ter sido testada mais cedo, antes de treinar o primeiro modelo
-  completo; teria economizado uma iteração de retreino.
+  completo; teria economizado uma iteração de retreino. E o perfil dos segmentos
+  poderia ter sido lido linha a linha antes de nomeá-los: foi o que revelou, só
+  na segunda passada, que um dos cinco grupos era quilometragem implausível.
 - **O que fazer diferente** — em um próximo projeto, rodar a comparação de
-  espaços de atributos (numérico × misto) como primeira coisa da modelagem,
-  não como reação a um resultado ruim.
+  espaços de atributos (numérico × misto) como primeira coisa da modelagem, não
+  como reação a um resultado ruim; e passar **toda** variável derivada pela
+  etapa de discrepantes da EDA, inclusive as reservadas — foi exatamente a que
+  ficou de fora que quase entregou a conclusão comercial invertida.
 
-Manutenção e ponto de contato após o encerramento: Venicios
-(venicios1997@gmail.com) — 
-
-Reavaliação dos dados e adição de novas avaliações: Josué V.
-(josuevasconceloss@gmail.com) —
+Manutenção e ponto de contato após o encerramento: a equipe do projeto
+(Venicios Andrade, Luis Helder, Marcos Paulo, Josué Vasconcelos e Plínio
+Rodrigues).

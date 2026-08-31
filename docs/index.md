@@ -14,11 +14,20 @@ metropolitana, para identificar segmentos de veículos com características
 semelhantes — e, a partir deles, apontar quais tipos de veículo uma pequena
 revenda deveria priorizar na compra e revenda.
 
-O resultado: **5 segmentos**, obtidos por K-Means sobre `ano` e `km` (silhueta
-0,54), com leitura de negócio construída sobre marca, câmbio, carroceria, tipo de
-vendedor e desconto médio em relação à Tabela FIPE — a métrica que aponta as
-oportunidades comerciais de cada grupo. Detalhes em
-[Modelagem dos dados](modelagem.md) e [Avaliação dos resultados](avaliacao.md).
+O resultado: **4 segmentos**, obtidos por K-Means sobre `ano`, `km` e `zero_km`
+(silhueta 0,541), com leitura de negócio construída sobre marca, câmbio, carroceria,
+tipo de vendedor e desconto em relação à Tabela FIPE — a métrica que aponta as
+oportunidades comerciais de cada grupo:
+
+| Segmento | Perfil | Anúncios | Preço mediano | Idade | Desconto mediano vs. FIPE |
+|:-:|:---|--:|--:|--:|--:|
+| 0 | Populares antigos | 255 (10,5%) | R$ 14.000 | 25 anos | **+7,7%** |
+| 2 | Populares usados | 1.028 (42,5%) | R$ 39.900 | 12 anos | **+0,7%** |
+| 1 | Seminovos recentes | 1.070 (44,3%) | R$ 97.990 | 2 anos | −0,9% |
+| 3 | Zero-km e vitrine | 65 (2,7%) | R$ 175.990 | 0 anos | −9,6% |
+
+Detalhes em [Modelagem dos dados](modelagem.md) e
+[Avaliação dos resultados](avaliacao.md).
 
 ## Dados do projeto
 
@@ -59,18 +68,19 @@ informação). Ver [Fonte dos dados](fonte-dados.md).
 
 ## Sobre o projeto
 
-Projeto individual da disciplina **Aprendizado de Máquina Não Supervisionado**,
+Projeto em equipe da disciplina **Aprendizado de Máquina Não Supervisionado**,
 MBA em Ciência de Dados. Não há stakeholder externo real contratante: o "cliente"
 — uma pequena revenda de veículos de Fortaleza — é o cenário de negócio definido
-no Canvas do Problema da disciplina, e todos os papéis técnicos e de negócio
-abaixo são exercidos pelo mesmo autor.
+no Canvas do Problema da disciplina, e os papéis técnicos e de negócio abaixo são
+exercidos pelos próprios integrantes.
 
 ### Histórico do documento
 
 | Data       | Versão | Descrição                                     | Autor    |
 | :--------- | :----- | :--------------------------------------------- | :------- |
-| 2026-08-22 | 1.0    | Versão inicial da documentação (notebooks 00-03) | Venicios |
-| 2026-08-30 | 1.1    | Versão atualizada (notebooks 00-03) | Josué V. |
+| 2026-08-22 | 1.0    | Versão inicial da documentação (notebooks 00-03) | Venicios Andrade |
+| 2026-08-30 | 1.1    | Regras de hodômetro implausível e de desconto fora de faixa; k passa de 5 para 4; ranking de oportunidade por mediana; segmentos nomeados | Equipe |
+
 ### Dados do solicitante
 
 ``` mermaid
@@ -84,7 +94,10 @@ flowchart TD
 
 ### Dados da equipe técnica
 
-| Nome     | Cargo / Função                                              | E-mail                  |
-| :------- | :------------------------------------------------------------ | :----------------------- |
-| Venicios | Coleta, análise, modelagem    | venicios1997@gmail.com  |
-| Josue Vasconcelos | Implantação      | josuevasconceloss@gmail.com  |
+| Nome | Cargo / Função |
+| :--- | :--- |
+| Venicios Andrade | Coleta, engenharia de dados e modelagem |
+| Luis Helder | Revisão metodológica, preparação dos dados e implantação |
+| Marcos Paulo | Análise exploratória e documentação |
+| Josué Vasconcelos | Análise exploratória e documentação |
+| Plínio Rodrigues | Avaliação dos resultados e leitura de negócio |

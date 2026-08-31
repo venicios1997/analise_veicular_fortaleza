@@ -1,11 +1,11 @@
 {
   "algoritmo": "k-means",
   "melhores_parametros": {
-    "init": "k-means++",
-    "n_clusters": 5
+    "init": "random",
+    "n_clusters": 4
   },
-  "n_segmentos": 5,
-  "silhueta": 0.5423,
-  "davies_bouldin": 0.5425,
-  "calinski_harabasz": 6669.8
+  "n_segmentos": 4,
+  "silhueta": 0.5414,
+  "davies_bouldin": 0.4964,
+  "calinski_harabasz": 7706.7
 }

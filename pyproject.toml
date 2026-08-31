@@ -28,6 +28,9 @@ dev = [
     "invoke>=2.2.0",
     "nbclient>=0.10.0",
     "nbformat>=5.10.0",
+    # Usado pelo hook de pre-commit e pela conferencia do CI
+    # (uv run nbstripout --verify notebooks/*.ipynb).
+    "nbstripout>=0.8.1",
     "ipykernel>=6.29.0",
 ]
 docs = [
@@ -36,7 +39,6 @@ docs = [
     "mkdocs-material>=9.5.44",
     "mkdocs-jupyter>=0.25.0",
     "mkdocs-glightbox>=0.4.0",
-    "mkdocs-awesome-pages-plugin>=2.9.2",
     "mkdocs-print-site-plugin>=2.5.0",
     "pymdown-extensions>=10.8.1",
 ]
