@@ -130,7 +130,7 @@ materializada e imutável.
 
 | Nome | Responsabilidade |
 |:---|:---|
-| [Marcos Venicios de Andrade](https://github.com/venicios1997) | Coleta, engenharia de dados e modelagem |
+| Marcos Venicios de Andrade| Coleta, engenharia de dados e modelagem |
 | Luis Helder | Revisão metodológica, preparação dos dados e implantação |
 | Marcos Paulo | Análise exploratória e documentação |
 | Josué Vasconcelos | Análise exploratória e documentação |
