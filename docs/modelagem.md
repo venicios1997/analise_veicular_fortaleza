@@ -156,9 +156,9 @@ A nomeação dos grupos é **manual**, feita a partir dessas medianas, não
 automática — mas não é livre: cada nome vem acompanhado de uma condição
 verificável no notebook `03-modelagem` (por exemplo, *Populares antigos* exige
 idade mediana ≥ 18 anos e km mediana ≥ 120.000). Se uma coleta futura mudar o
-mercado, a execução falha ali em vez de publicar um catálogo cujo rótulo não
-descreve mais o grupo. Detalhe completo em
-[Avaliação dos resultados](avaliacao.md).
+mercado (nova execução de [`src/coleta/`](fonte-dados.md#o-coletor)), a execução
+falha ali em vez de publicar um catálogo cujo rótulo não descreve mais o grupo.
+Detalhe completo em [Avaliação dos resultados](avaliacao.md).
 
 ### Duas leituras do desconto sobre a FIPE
 

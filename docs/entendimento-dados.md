@@ -5,7 +5,8 @@ qualidade** e **o que isso impede ou permite** dentro dos objetivos do projeto.
 
 ## Dados iniciais
 
-Os dados analisados aqui vêm de `data/raw/anuncios_detalhados.csv` (ver
+Os dados analisados aqui vêm de `data/raw/anuncios_detalhados.csv`, gerado pelo
+coletor em [`src/coleta/`](fonte-dados.md#o-coletor) (ver
 [Fonte dos dados](fonte-dados.md)). A apuração completa está no notebook
 `00-dicionario-dados.ipynb` (dicionário de dados) e no `01-analise-exploratoria.ipynb`
 (o roteiro de 8 etapas descrito abaixo).
@@ -65,7 +66,8 @@ troca. Só ficou visível ao perfilar os segmentos, e virou a regra 7 da
 1. **62 anúncios com falha total de captura**: as 7 colunas do bloco
    `window.dataLayer` (marca, câmbio, combustível, carroceria, portas, tipo de
    vendedor, município) ficam vazias **juntas** quando o bloco falha ao
-   carregar — falha do scraper, não ausência de informação do anúncio. Esses
+   carregar — falha do scraper (`src/coleta/scraper.py`, função
+   `_extrair_bloco_datalayer`), não ausência de informação do anúncio. Esses
    registros são removidos (`02-ajustes-dados.ipynb`, bloco 3), não imputados.
 2. **Ausência real e legítima, não estrutural**: todo carro tem marca e
    câmbio — o que falta é real. `aceita_troca` (**27,4%** na base bruta de
@@ -89,7 +91,7 @@ troca. Só ficou visível ao perfilar os segmentos, e virou a regra 7 da
 | Valor | Descrição | Regra de derivação |
 |:---|:---|:---|
 | FIPE da OLX | Valor de referência que a própria OLX calcula e mostra no anúncio | `valor_fipe_olx` quando presente (90,7% dos anúncios) |
-| FIPE via API pública | Casamento de marca/modelo/ano por similaridade de texto contra `parallelum.com.br/fipe` | Usada como *fallback* quando `valor_fipe_olx` é nula — eleva a cobertura para 97,1% |
+| FIPE via API pública | Casamento de marca/modelo/ano por similaridade de texto contra `parallelum.com.br/fipe` (`src/coleta/matcher.py` + `preenche_fipe_faltantes.py`) | Usada como *fallback* quando `valor_fipe_olx` é nula — eleva a cobertura para 97,1% |
 | Sem FIPE | Nem a OLX nem o *fallback* encontraram valor | Permanece nula (2,9% dos anúncios); a coluna é reservada, então isso não afeta a modelagem |
 
 ## Limitações

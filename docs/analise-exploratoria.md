@@ -41,8 +41,11 @@ base não declara nenhuma escala do tipo `Ex > Gd > TA`) e características de
 - **Mesclagem da FIPE dentro da EDA, não na ingestão**: diferente de um projeto
   que consome uma base pública pronta, aqui a análise exploratória é também o
   lugar onde `valor_fipe_olx` (90,7% de cobertura) é mesclada com o resultado
-  da API pública (`fipe_fallback.csv`), subindo a cobertura para 97,1% — decisão
-  registrada porque a mesclagem já é, em si, um achado de qualidade de dado.
+  da API pública (`fipe_fallback.csv`, gerado por
+  `src/coleta/preenche_fipe_faltantes.py` — ver
+  [Fonte dos dados](fonte-dados.md#o-coletor)), subindo a cobertura para 97,1% —
+  decisão registrada porque a mesclagem já é, em si, um achado de qualidade de
+  dado.
 - **3 reservadas, não 1**: além do rótulo (`preco`) e da variável de validação
   externa (`bairro`), `valor_fipe_final` também fica reservada — é derivada de
   marca/modelo/ano e entraria na modelagem de forma redundante; serve só para

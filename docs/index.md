@@ -32,10 +32,11 @@ Detalhes em [Modelagem dos dados](modelagem.md) e
 ## Dados do projeto
 
 Os dados são anúncios públicos de carros usados publicados na OLX
-(`ce.olx.com.br`), coletados por scraping (Playwright) entre 21 e 22/08/2026,
-complementados com o valor de referência da Tabela FIPE (via API pública
-`parallelum.com.br/fipe`, para os anúncios em que a própria OLX não trazia essa
-informação). Ver [Fonte dos dados](fonte-dados.md).
+(`ce.olx.com.br`), coletados por scraping (Playwright) entre 21 e 22/08/2026 com
+o coletor em [`src/coleta/`](fonte-dados.md#o-coletor), complementados com o
+valor de referência da Tabela FIPE (via API pública `parallelum.com.br/fipe`,
+para os anúncios em que a própria OLX não trazia essa informação). Ver
+[Fonte dos dados](fonte-dados.md).
 
 ### Levantamento inicial
 
@@ -80,6 +81,7 @@ exercidos pelos próprios integrantes.
 | :--------- | :----- | :--------------------------------------------- | :------- |
 | 2026-08-22 | 1.0    | Versão inicial da documentação (notebooks 00-03) | Venicios Andrade |
 | 2026-08-30 | 1.1    | Regras de hodômetro implausível e de desconto fora de faixa; k passa de 5 para 4; ranking de oportunidade por mediana; segmentos nomeados | Equipe |
+| 2026-08-31 | 1.2    | Coletor incorporado ao repositório (`src/coleta/`) e referenciado nas páginas; ver [Fonte dos dados — O coletor](fonte-dados.md#o-coletor) | Equipe |
 
 ### Dados do solicitante
 

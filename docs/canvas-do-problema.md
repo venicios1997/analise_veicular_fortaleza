@@ -106,7 +106,8 @@ Cada linha da base representa um anúncio.
 
 ### Fontes
 
-- **OLX** — fonte efetivamente usada (ver [Fonte dos dados](fonte-dados.md)).
+- **OLX** — fonte efetivamente usada, coletada com o scraper Playwright de
+  `src/coleta/` (ver [Fonte dos dados](fonte-dados.md#o-coletor)).
 - iCarros e outras plataformas foram consideradas no planejamento, mas não
   usadas — a OLX sozinha já atingiu a meta de volume.
 
@@ -255,6 +256,9 @@ Identificação de oportunidades
         ↓
 Recomendação para composição de estoque
 ```
+
+A primeira etapa, *Coleta dos anúncios*, é o coletor em
+[`src/coleta/`](fonte-dados.md#o-coletor); as demais rodam sobre `data/raw/`.
 
 Seguida integralmente — o único desvio foi não usar PCA (a comparação de
 espaços de atributos mostrou que reduzir para 3 variáveis numéricas já bastava,

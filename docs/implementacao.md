@@ -32,8 +32,8 @@ modelo novo).
 ## Monitoramento e manutenção
 
 Não há pipeline de dados novo chegando automaticamente — a coleta é manual e
-pontual (ver [Fonte dos dados](fonte-dados.md)). O que se aplica, num projeto
-deste porte:
+pontual, rodando os scripts de [`src/coleta/`](fonte-dados.md#o-coletor). O que
+se aplica, num projeto deste porte:
 
 | O que monitorar | Como | Periodicidade | Ação se desviar |
 |:---|:---|:---|:---|
@@ -48,11 +48,13 @@ e verifica que os notebooks versionados estão sem saída.
 
 ### Retreinamento
 
-Não há calendário de retreinamento. Se uma nova coleta for feita no futuro, o
-modelo deve ser retreinado do zero (não incrementalmente): rodar
-`03-modelagem.ipynb` de novo sobre a base curada atualizada, repetindo a etapa
-de sensibilidade ao espaço de atributos — a composição do mercado pode mudar o
-suficiente para alterar qual espaço separa melhor os grupos.
+Não há calendário de retreinamento. Se uma nova coleta for feita no futuro
+(reexecutando `src/coleta/coleta_dataset.py` e `preenche_fipe_faltantes.py` —
+ver [Fonte dos dados](fonte-dados.md#o-coletor)), o modelo deve ser retreinado
+do zero (não incrementalmente): rodar `03-modelagem.ipynb` de novo sobre a base
+curada atualizada, repetindo a etapa de sensibilidade ao espaço de atributos —
+a composição do mercado pode mudar o suficiente para alterar qual espaço separa
+melhor os grupos.
 
 ## Relatório final
 

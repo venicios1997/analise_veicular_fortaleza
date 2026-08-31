@@ -120,5 +120,5 @@ mediana, e isso é informação sobre o segmento, não ruído a esconder.
 | Ação | Responsável | Prazo |
 |:---|:---|:---|
 | Publicar a documentação (MkDocs) e o app Streamlit | Equipe | entrega da disciplina |
-| Se houver nova coleta futura, repetir a comparação de espaço de atributos antes de reusar a mesma configuração | Equipe | próxima iteração, se houver |
+| Se houver nova coleta futura ([`src/coleta/`](fonte-dados.md#o-coletor)), repetir a comparação de espaço de atributos antes de reusar a mesma configuração | Equipe | próxima iteração, se houver |
 | Incluir `desconto_fipe_pct` na etapa de discrepantes da EDA (notebook 01) | Equipe | próxima iteração |

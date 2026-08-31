@@ -9,7 +9,7 @@
     - [x] Produzir relatório de mineração dos dados
 
 ???+ success "Fase 3: Entendimento dos dados"
-    - [x] Gerar conjunto de dados
+    - [x] Gerar conjunto de dados (coletor em [`src/coleta/`](fonte-dados.md#o-coletor))
     - [x] Produzir relatório de qualidade dos dados
     - [x] Realizar descrição dos dados
     - [x] Realizar análise exploratória

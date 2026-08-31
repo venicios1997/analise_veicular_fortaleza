@@ -12,7 +12,7 @@ cada fase produziu neste projeto** e aponta onde o resultado está documentado.
 | Fase | O que foi feito aqui | Onde está |
 |:--|:---|:---|
 | **1. Entendimento de negócio** | Canvas do Problema de uma pequena revenda de Fortaleza: a dor (capital parado em carro de baixa procura), a decisão a apoiar (o que comprar para estoque) e os critérios de aceite verificáveis | [Canvas do Problema](canvas-do-problema.md), [Entendimento de negócio](entendimento-negocio.md), [Critérios de sucesso](criterios-sucesso.md) |
-| **2. Entendimento dos dados** | Coleta de 2.565 anúncios da OLX (Playwright) e mesclagem da FIPE; dicionário das 23 colunas brutas; roteiro de 8 etapas de EDA | [Fonte dos dados](fonte-dados.md), [Entendimento dos dados](entendimento-dados.md), [Análise exploratória](analise-exploratoria.md) |
+| **2. Entendimento dos dados** | Coleta de 2.565 anúncios da OLX (Playwright, código em `src/coleta/`) e mesclagem da FIPE; dicionário das 23 colunas brutas; roteiro de 8 etapas de EDA | [Fonte dos dados](fonte-dados.md#o-coletor), [Entendimento dos dados](entendimento-dados.md), [Análise exploratória](analise-exploratoria.md) |
 | **3. Preparação dos dados** | Dez regras de limpeza, cada uma com motivo e volume afetado; base curada de 2.418 anúncios e atributos derivados | [Preparação dos dados](preparacao.md) |
 | **4. Modelagem** | Teste do espaço de atributos (numérico × misto) antes de fixar o desenho; quatro algoritmos comparados por validação cruzada; K-Means com k=4 | [Modelagem dos dados](modelagem.md) |
 | **5. Avaliação** | Confronto com os dez critérios de aceite, revisão do processo e decisão de seguir para implantação | [Avaliação dos resultados](avaliacao.md) |
@@ -56,6 +56,8 @@ a coleta foi de um dia só). O detalhamento de cada etapa está em
 
 A pilha completa, com a função de cada peça, está em
 [Entendimento de negócio — Requisitos técnicos](entendimento-negocio.md#requisitos-tecnicos).
-Em resumo: Python 3.12 gerenciado com `uv`, JupyterLab para os notebooks,
-scikit-learn para a clusterização, MkDocs Material para esta documentação e
-Streamlit para a aplicação de implantação. Tudo gratuito e executado localmente.
+Em resumo: Python 3.12 gerenciado com `uv`, Playwright para o scraping da OLX
+(coletor em `src/coleta/`, ver [Fonte dos dados](fonte-dados.md#o-coletor)),
+JupyterLab para os notebooks, scikit-learn para a clusterização, MkDocs Material
+para esta documentação e Streamlit para a aplicação de implantação. Tudo
+gratuito e executado localmente.

@@ -110,7 +110,7 @@ objetivo do projeto, mas restringem a interpretação dos resultados:
 | # | Pendência | Destrava |
 |:-:|:---|:---|
 | 1 | Preço de venda efetivo (só temos o preço anunciado) | Acesso a dados de transação real, que a OLX não publica |
-| 2 | Série histórica de anúncios (coleta é de um único dia) | Coletas repetidas ao longo do tempo, fora do escopo deste projeto |
+| 2 | Série histórica de anúncios (coleta é de um único dia) | Coletas repetidas ao longo do tempo — o coletor está em [`src/coleta/`](fonte-dados.md#o-coletor), mas repetir a coleta está fora do escopo deste projeto |
 
 !!! info "Fonte"
     Critérios derivados do Canvas do Problema da disciplina de Aprendizado de

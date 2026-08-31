@@ -11,7 +11,7 @@
     - [x] Produzir relatório de mineração dos dados (esta página)
 
 ???+ success "Fase 3: Entendimento dos dados"
-    - [x] Gerar conjunto de dados (coleta OLX + FIPE)
+    - [x] Gerar conjunto de dados (coleta OLX + FIPE — [`src/coleta/`](fonte-dados.md#o-coletor))
     - [x] Produzir relatório de qualidade dos dados
     - [x] Realizar descrição dos dados (`00-dicionario-dados.ipynb`)
     - [x] Realizar análise exploratória (`01-analise-exploratoria.ipynb`)
@@ -48,9 +48,10 @@ decisões de escopo.
 - **Humanos:** uma equipe de cinco integrantes, acumulando entre si os papéis de
   analista de negócio, engenheiro de dados e cientista de dados.
 - **Tecnológicos:** Python 3.12, `uv` para gerência de ambiente, Playwright para
-  o scraping (repositório separado, não versionado aqui), JupyterLab,
-  scikit-learn, MkDocs Material para a documentação e Streamlit para a
-  aplicação. Nenhum serviço pago — tudo roda localmente.
+  o scraping (coletor versionado em `src/coleta/`, ver
+  [Fonte dos dados](fonte-dados.md#o-coletor)), JupyterLab, scikit-learn, MkDocs
+  Material para a documentação e Streamlit para a aplicação. Nenhum serviço
+  pago — tudo roda localmente.
 - **Financeiros:** nenhum orçamento dedicado; a única dependência externa é a
   API pública gratuita da Tabela FIPE (`parallelum.com.br`), usada com
   moderação (delay entre chamadas) por ter limite de requisições.
@@ -112,7 +113,7 @@ parado em carros de baixa procura.
 | :simple-uv: uv                        | Gerenciamento de dependências e do ambiente virtual do projeto.  |
 | :simple-python: Python 3.12           | Linguagem de todo o pipeline (coleta, análise, modelagem, app).  |
 | :simple-jupyter: JupyterLab           | Ambiente dos notebooks 00–03.                                     |
-| :simple-playwright: Playwright        | Scraping da OLX (repositório separado da coleta).                |
+| :simple-playwright: Playwright        | Scraping da OLX — coletor versionado em `src/coleta/` ([Fonte dos dados](fonte-dados.md#o-coletor)). |
 | :material-bookshelf: Bibliotecas      | pandas, numpy, scipy, scikit-learn, matplotlib, seaborn, prince, circlify, joblib, streamlit. |
 | :material-file-document: MkDocs Material | Publicação desta documentação.                                |
 
@@ -155,8 +156,9 @@ rodando a coleta e o pipeline novamente.
 
 ## Mineração de dados
 
-Os dados brutos ficam em `data/raw/` (imutáveis) e a base curada em
-`data/processed/` — sem Data Warehouse corporativo, dado o escopo do projeto.
+Os dados brutos ficam em `data/raw/` (imutáveis), gerados pelo coletor em
+[`src/coleta/`](fonte-dados.md#o-coletor), e a base curada em `data/processed/` —
+sem Data Warehouse corporativo, dado o escopo do projeto.
 Não há dado pessoal sensível: os anúncios são públicos e não trazem
 identificação do comprador; a localização do vendedor é limitada a
 bairro/município, informação já pública no próprio anúncio da OLX.

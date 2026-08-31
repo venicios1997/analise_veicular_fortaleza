@@ -38,6 +38,22 @@ Detalhamento completo, com critérios de aceite verificáveis, em
 
 ## Conteúdo
 
+### A coleta
+
+O coletor está em `src/coleta/` (fase 2 do CRISP-DM). Três frentes:
+
+| Script | Papel |
+|:---|:---|
+| `scraper.py` | Scraping da OLX com Playwright (Chromium real — a OLX bloqueia HTTP puro); lê o card de busca e o bloco `window.dataLayer` de cada anúncio, além do valor de FIPE-OLX |
+| `coleta_dataset.py` | Montagem do dataset em lote, em duas fases resumíveis (`listagem` e `detalhes`), varrendo 10 faixas de preço de R$ 5.000 a R$ 250.000 com pausas entre requisições |
+| `preenche_fipe_faltantes.py` + `matcher.py` + `fipe_api.py` | Preenche a FIPE faltante casando marca/modelo/ano por similaridade de texto contra a API pública `parallelum.com.br/fipe` — cobertura sobe de 90,7% para 97,1% |
+
+Os 3 CSVs de `src/coleta/dados/` são a coleta congelada de 21–22/08/2026 e são
+idênticos aos de `data/raw/`, a camada bruta imutável de onde o pipeline parte.
+`src/coleta/app.py` é um app Streamlit de apoio (busca ao vivo na OLX rankeada
+por desconto vs. FIPE), fora do pipeline de modelagem. Detalhes em
+[Fonte dos dados — O coletor](docs/fonte-dados.md#o-coletor).
+
 ### Notebooks
 
 | Notebook | Fase do CRISP-DM | O que faz |
@@ -122,9 +138,11 @@ A versão do Python está fixada em [`.python-version`](.python-version); o `uv`
 instala e usa essa versão automaticamente.
 
 **Nota sobre a coleta:** os dados já vêm coletados em `data/raw/` (scraping da
-OLX + API pública da Tabela FIPE). O coletor é uma ferramenta separada, não
-incluída neste repositório — este projeto parte da camada bruta já
-materializada e imutável.
+OLX + API pública da Tabela FIPE) e o pipeline parte dessa camada bruta, tratada
+como imutável. O coletor que a produziu está versionado em
+[`src/coleta/`](docs/fonte-dados.md#o-coletor) — scraper Playwright, casamento
+com a FIPE e montagem do dataset em lote; os CSVs de `src/coleta/dados/` são
+idênticos aos de `data/raw/`.
 
 ## Desenvolvedores
 
@@ -142,7 +160,7 @@ materializada e imutável.
 .
 ├── .github/                # Workflows de CI/publicação, templates de issues/PRs e CODEOWNERS
 ├── data/
-│   ├── raw/                # 3 CSVs da coleta (imutáveis)
+│   ├── raw/                # 3 CSVs da coleta (imutáveis — cópia de src/coleta/dados/)
 │   └── processed/          # base curada, matriz de modelagem, base segmentada
 ├── docs/                   # Documentação do projeto publicada com o MkDocs
 ├── models/                 # Pipeline treinado (.joblib) e catálogo de segmentos (.json)
@@ -154,6 +172,7 @@ materializada e imutável.
 │   ├── notebooks/           # Os notebooks executados, com saída (publicados no site)
 │   └── tables/               # Tabela-fonte de cada figura, mesma organização
 ├── src/
+│   ├── coleta/              # Coletor: scraping da OLX (Playwright), casamento com a FIPE e montagem do dataset bruto
 │   ├── config.py            # Caminhos, semente, paleta, critérios de sucesso do Canvas
 │   ├── data/                # Ingestão, dicionário de dados, preparação, checagens de qualidade
 │   ├── eda/                 # Medidas de associação e detecção de discrepantes
