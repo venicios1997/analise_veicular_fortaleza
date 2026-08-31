@@ -70,7 +70,7 @@ abaixo são exercidos pelo mesmo autor.
 | Data       | Versão | Descrição                                     | Autor    |
 | :--------- | :----- | :--------------------------------------------- | :------- |
 | 2026-08-22 | 1.0    | Versão inicial da documentação (notebooks 00-03) | Venicios |
-
+| 2026-08-30 | 1.1    | Versão atualizada (notebooks 00-03) | Josué V. |
 ### Dados do solicitante
 
 ``` mermaid
@@ -86,4 +86,5 @@ flowchart TD
 
 | Nome     | Cargo / Função                                              | E-mail                  |
 | :------- | :------------------------------------------------------------ | :----------------------- |
-| Venicios | Autor único — coleta, análise, modelagem e implantação      | venicios1997@gmail.com  |
+| Venicios | Coleta, análise, modelagem    | venicios1997@gmail.com  |
+| Josue Vasconcelos | Implantação      | josuevasconceloss@gmail.com  |

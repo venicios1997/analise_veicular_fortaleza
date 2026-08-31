@@ -67,3 +67,4 @@ interpretação dos resultados pode ir.
 |:---|:---|:---|
 | Publicar a documentação (MkDocs) e o app Streamlit | Venicios | entrega da disciplina |
 | Se houver nova coleta futura, repetir a comparação de espaço de atributos antes de reusar a mesma configuração | Venicios | próxima iteração, se houver |
+| Reconfiguração do notebook | Josue V. | Alterações em pontos criticos da avaliação |

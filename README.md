@@ -112,7 +112,9 @@ materializada e imutável.
 
 ## Desenvolvedores
 
-- [Marcos Venicios de Andrade](https://github.com/venicios1997) — matrícula 2517819 — autor único (coleta, análise, modelagem, implantação)
+- [Marcos Venicios de Andrade](https://github.com/venicios1997) — matrícula 2517819 — Coleta, análise, modelagem
+- [Josue de Vasconcelos Silveira Moreira](https://github.com/josueVSM) — matrícula 2517534 — Implantação
+
 
 ## Organização de diretórios
 

@@ -77,4 +77,7 @@ esse papel.
   não como reação a um resultado ruim.
 
 Manutenção e ponto de contato após o encerramento: Venicios
-(venicios1997@gmail.com) — projeto individual, sem equipe a transferir.
+(venicios1997@gmail.com) — 
+
+Reavaliação dos dados e adição de novas avaliações: Josué V.
+(josuevasconceloss@gmail.com) —

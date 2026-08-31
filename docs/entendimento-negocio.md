@@ -60,6 +60,7 @@ que orientaram as decisões de escopo.
 | Nome     | Cargo / Função                                         | E-mail                 |
 | :------- | :------------------------------------------------------ | :----------------------- |
 | Venicios | Coleta de dados, engenharia de dados, ciência de dados | venicios1997@gmail.com |
+| Josué V. | Engenharia de dados, ciência de dados | josuevasconceloss@gmail.com |
 
 #### Especialistas de negócio
 
